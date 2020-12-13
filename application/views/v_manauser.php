@@ -18,65 +18,18 @@
                         </div>
                     </div>
                     <div class="row bg-light rounded-lg py-3 mx-1">
-                        <div class="col overflow-auto" style="height: 50vh;">
-                        	<form method="post" action="<?= base_url();?>home/ubahbagian">
-	                            <table id="tabel1" class="align-middle table table-sm table-striped table-bordered" style="width:100%; font-size: 1em;">
-	                                <thead>
-	                                    <tr>
-                                            <th>No</th>
-											<th>ID</th>
-											<th>Name</th>
-											<th>Role</th>
-											<th>Position</th>
-											<th>Send Register</th>
-											<th>Send Info</th>
-                                        </tr>
-	                                </thead>
-	                                <tbody>
-	                                    <?php $i=1; ?>
-										<?php
-										foreach ($result as $row) :
-										if ($row->role == 14) {
-												$role = 'ADMIN';
-										} elseif ($row->role == 0) {
-												$role = 'USER';
-										} else {
-												$role = 'Unknown';
-										}
-										?>
-										<tr class="ubahnama" data-toggle="modal" data-target="#ubahnama">
-											<td class="pt-2"><?= $i++; ?></td>
-											<td class="pt-2"><?= $row->uid; ?></td>
-											<td class="pt-2"><?= $row->nama; ?></td>
-											<td class="pt-2"><?= $role; ?></td>
-											<td>
-												<select id="inputState" class="form-control" name="pbagian[]" style="width: 130px;">
-												<option value="<?= $row->uid; ?>,<?= $row->bagian; ?>" selected><?= $row->bnama; ?></option>
-												<?php foreach ($bagian as $a) :?>
-												<option value="<?= $row->uid; ?>,<?= $a->id; ?>"><?= $a->bnama; ?></option>
-												<?php endforeach;?>
-												</select>
-											</td>
-											<td>
-												<?php foreach ($daftarmesin as $a) :?>
-												<a href="registrasi/<?=$a->id;?>/<?=$row->uid;?>" class="btn btn-sm mb-1 btn-info"><?=$a->namamesin;?></a>
-												<?php endforeach;?>
-											</td>
-											<td>
-												<?php foreach ($daftarmesin as $a) :?>
-												<a href="informasi/<?=$a->id;?>/<?=$row->uid;?>" class="btn btn-sm mb-1 btn-primary"><?=$a->namamesin;?></a>
-												<?php endforeach;?>
-											</td>
-										</tr>
-										<?php endforeach; ?>
-	                                </tbody>
-	                                <tfoot>
-	                                    <tr>
-                                            <th colspan="7"><button class="btn btn-primary nav-ajs-cs" type="submit">Save</button></th>
-                                        </tr>
-	                                </tfoot>
-	                            </table>
-                            </form>      
+                        <div class="col overflow-auto" style="height: 50vh;">   
+                        	<table id="cobacoba" class="align-middle table table-sm table-striped table-bordered" style="width:100%; font-size: 1em;">
+		                    	<thead>
+		                            <tr class="salah">
+		                                <th>No</th>
+										<th>ID</th>
+										<th>Name</th>
+										<th>Role</th>
+										<th>Position</th>
+		                            </tr>
+		                        </thead>
+		                    </table>
                         </div>
                     </div>
                 </div>
@@ -100,36 +53,34 @@
 				  		<span aria-hidden="true">&times;</span>
 					</button>
 			  	</div>
-			  	<form method="post" action="<?= base_url();?>home/tambahuser">
-			  		<div class="modal-body">
-				  		<div class="form-group">
-							<label for="nerw">New UID</label>
-							<input name="tuid" type="text" class="form-control" id="nerw" aria-describedby="emailHelp" required>
-				  		</div>
-				  		<div class="form-group">
-							<label for="nerw">New User</label>
-							<input name="tuser" type="text" class="form-control" id="nearw" aria-describedby="emailHelp" required>
-				  		</div>
-				  		<div class="form-group">
-							<label for="nerw">Position</label>
-							<select id="inputState" class="form-control" name="tdevisi">
-								<?php foreach ($bagian as $a) :?>
-								<option value="<?= $a->id; ?>"><?= $a->bnama; ?></option>
-								<?php endforeach;?>
-							</select>
-				  		</div>
-				  		<div class="form-group">
-							<label for="nerw">Role</label>
-							<select id="inputState" class="form-control" name="trole">
-								<option value="0">User</option>
-								<option value="14">Admin</option>
-							</select>
-				  		</div>
+		  		<div class="modal-body">
+			  		<div class="form-group">
+						<label for="tuid">New UID</label>
+						<input name="tuid" type="text" class="form-control" id="tuid" aria-describedby="emailHelp" required>
 			  		</div>
-			  		<div class="modal-footer">
-						<button type="submit" class="btn btn-primary">Save</button>
+			  		<div class="form-group">
+						<label for="tuser">New User</label>
+						<input name="tuser" type="text" class="form-control" id="tuser" aria-describedby="emailHelp" required>
 			  		</div>
-				</form>
+			  		<div class="form-group">
+						<label for="tbagian">Position</label>
+						<select id="tbagian" class="form-control" name="tdevisi">
+							<?php foreach ($bagian as $a) :?>
+							<option value="<?= $a->id; ?>"><?= $a->bnama; ?></option>
+							<?php endforeach;?>
+						</select>
+			  		</div>
+			  		<div class="form-group">
+						<label for="trole">Role</label>
+						<select id="trole" class="form-control" name="trole">
+							<option value="0">User</option>
+							<option value="14">Admin</option>
+						</select>
+			  		</div>
+		  		</div>
+		  		<div class="modal-footer">
+					<button id="tambahuser" class="btn btn-primary">Add</button>
+		  		</div>
 			</div>
         </div>
     </div>
@@ -139,22 +90,24 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
 			  	<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Change Name</h5>
+					<h5 class="modal-title" id="exampleModalLabel">Change / Action</h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				  		<span aria-hidden="true">&times;</span>
 					</button>
 			  	</div>
-			  	<form method="post" action="<?= base_url();?>home/ubahnamauser">
-			  		<div class="modal-body">
-				  		<div class="form-group">
+			  	<div class="modal-body">
+		  			<div class="form-row">
+				  		<div class="form-group col-md-6">
 							<label for="nerw">UID</label>
 							<input name="cuid" type="text" class="form-control" id="cuid" aria-describedby="emailHelp" disabled>
 				  		</div>
-				  		<div class="form-group">
+				  		<div class="form-group col-md-6">
 							<label for="nerw">Username</label>
 							<input name="cuser" type="text" class="form-control" id="cuser" aria-describedby="emailHelp" required>
 				  		</div>
-				  		<div class="form-group">
+			  		</div>
+			  		<div class="form-row">
+				  		<div class="form-group col-md-6">
 							<label for="cdevisi">Position</label>
 							<select id="cdevisi" class="form-control" name="cdevisi">
 								<?php foreach ($bagian as $a) :?>
@@ -162,18 +115,50 @@
 								<?php endforeach;?>
 							</select>
 				  		</div>
-				  		<div class="form-group">
+				  		<div class="form-group col-md-6">
 							<label for="crole">Role</label>
 							<select id="crole" class="form-control" name="crole">
 								<option value="0">User</option>
 								<option value="14">Admin</option>
 							</select>
 				  		</div>
-			  		</div>
-			  		<div class="modal-footer">
-						<button type="submit" class="btn btn-primary">Save</button>
-			  		</div>
-				</form>
+				  	</div>
+				  	<div class="dropdown-divider"></div>
+				  	<div class="form-row text-center">
+				  		<div class="col-md-6">
+				  			<button id="saveuser" class="btn btn-primary">Save</button>
+				  		</div>
+				  		<div class="col-md-6">
+				  			<button id="deleteuser" class="btn btn-danger">Delete</button>
+				  		</div>
+				  	</div>
+				  	<div class="dropdown-divider"></div>
+				  	<div class="form-row">
+				  		<div class="col-12 text-center">
+				  			<label>Register User to Machine</label>
+				  		</div>
+				  	</div>
+				  	<div class="form-row text-center">
+			  			<?php foreach ($daftarmesin as $mesin) :?>
+			  				<div class="form-group col-md-6">
+                                <button class="btn btn-primary sendregisteruser" data-nomesin="<?= $mesin->id; ?>" <?= ($statusMachine[$mesin->ipmesin]>0) ? 'disabled' : ''; ?>><?= $mesin->namamesin; ?></button>
+                            </div>
+						<?php endforeach; ?>
+				  	</div>
+				  	<div class="dropdown-divider"></div>
+			  		<div class="form-row">
+				  		<div class="col-12 text-center">
+				  			<label>Send Info User to Machine</label>
+				  		</div>
+				  	</div>
+				  	<div class="form-row text-center">
+			  			<?php foreach ($daftarmesin as $mesin) :?>
+			  				<div class="form-group col-md-6">
+                                <button class="btn btn-info sendinfouser" data-nomesin="<?= $mesin->id; ?>" <?= ($statusMachine[$mesin->ipmesin]>0) ? 'disabled' : ''; ?>><?= $mesin->namamesin; ?></button>
+                            </div>
+						<?php endforeach; ?>
+				  	</div>
+		  		</div>
 			</div>
         </div>
     </div>

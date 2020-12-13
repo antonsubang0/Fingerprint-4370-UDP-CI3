@@ -20,33 +20,14 @@
                     <div class="row bg-light rounded-lg py-3 mx-1">
                         <div class="col overflow-auto" style="height: 50vh;">
                         	<form method="post" action="<?= base_url();?>home/dbagian">
-	                            <table id="tabel1" class="table table-sm table-striped table-bordered align-middle" style="width:100%">
+	                            <table id="tabeldevisi" class="table table-sm table-striped table-bordered align-middle" style="width:100%">
 	                                <thead>
                                         <tr>
                                             <th>No</th>
-											<th>Bagian</th>
-											<th>Select</th>
+											<th>Position</th>
+											<th>Delete</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-									
-									<?php
-									$i=1;
-									
-									foreach ($result as $row) :
-									?>
-									<tr>
-										<td><?= $i++ ?></td>
-										<td><?= $row->bnama; ?></td>
-										<td><input type="checkbox" name="dbagian[]" value="<?= $row->id; ?>"></td>
-									</tr>
-									<?php endforeach;?>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="3"><button class="btn btn-primary" type="submit">Delete</button></th>
-                                        </tr>
-                                    </tfoot>
 	                            </table>
                             </form>      
                         </div>
@@ -75,14 +56,33 @@
 			  	<form method="post" action="<?= base_url();?>home/tbagian">
 			  		<div class="modal-body">
 				  		<div class="form-group">
-							<label for="nerw">New Position</label>
-							<input name="tbagian" type="text" class="form-control" id="nerw" aria-describedby="emailHelp" required>
+							<label for="tbagian">New Position</label>
+							<input name="tbagian" type="text" class="form-control" id="tbagian" aria-describedby="emailHelp" required>
 				  		</div>
 			  		</div>
 			  		<div class="modal-footer">
-						<button type="submit" class="btn btn-primary">Save</button>
+						<button id="tambahdevisi" type="submit" class="btn btn-primary">Save</button>
 			  		</div>
 			  	</form>
 			</div>
+        </div>
+    </div>
+    <div class="modal fade" id="modaldelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ask</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h6>Are you want delete ?</h6>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary cancel">Cancel</button>
+                    <button class="btn btn-danger yadeletedevisi">Yes</button>
+                </div>
+            </div>
         </div>
     </div>

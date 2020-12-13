@@ -479,4 +479,232 @@ class Home extends CI_Controller {
 			$this->session->set_flashdata('status', 'Data has been added.');
 			redirect('/home/managementdevisi/');
 		}
+
+		public function ajaxalldata()
+		{
+			$this->db->select('*');
+			$this->db->from('user');
+			$this->db->join('bagian', 'bagian.id = user.bagian');
+			$this->db->order_by('nama', 'ASC');
+			$this->db->order_by('bnama', 'ASC');
+			$query = $this->db->get();
+			$hasil = $query->result();
+			$array = array();
+			$i=1;
+
+			foreach ($hasil as $a) {
+				if ($a->role==14) { $role = 'Admin'; } else { $role = "User";}
+				
+				array_push($array, [
+					'DT_RowId' => $a->uid,
+					'no' => $i++, 
+					'uid' => $a->uid, 
+					'nama' =>$a->nama, 
+					'role' => $role,
+					'bagian' => $a->bnama
+				]);
+			}
+			$data['data'] = $array;
+			$data['message'] = 'success';
+
+			echo json_encode($data);
+		}
+
+		public function ajaxsingleuser($id='')
+		{
+			if ($id !=='') {
+				$this->db->join('bagian', 'bagian.id = user.bagian');
+				$query = $this->db->get_where('user', array('uid' => $id));
+				$hasil = $query->row_array();
+			}
+			echo json_encode($hasil);
+		}
+
+		public function ajaxsaveuser()
+		{
+			$pdata['data'] = [$this->input->post(), $this->input->post()];
+
+			$this->db->set('nama', $this->input->post("nama"));
+			$this->db->set('role', $this->input->post("role"));
+			$this->db->set('bagian', $this->input->post("bagian"));
+			$this->db->where('uid', $this->input->post("uid"));
+			$data['data'] = '';
+			if ($this->db->update('user')) {
+				$data['message'] = 'success';
+				$this->db->join('bagian', 'bagian.id = user.bagian');
+				$query = $this->db->get_where('user', array('uid' => $this->input->post("uid")));
+				$hasil = $query->row_array();
+				$data['data'] = $hasil;
+			} else {
+				$data['message'] = 'failed';
+			}
+			$data['message'] = 'success';
+
+			echo json_encode($data);
+
+
+		}
+		public function ajaxdeleteuser (){
+			$pdata = $this->input->post('uid');
+			$this->db->where('uid', $pdata);
+			$this->db->delete('user');
+			$response['message'] = 'success';
+			$response['data'] = 'User berhasil dihapus';
+			echo json_encode($response);
+		}
+
+		public function ajaxsendregister($codemesin, $uid) {
+			$this->db->order_by('namamesin', 'ASC');
+			$query = $this->db->get('mesin');
+			$data['daftarmesin'] = $query->result();
+			foreach ($query->result() as $row){
+					$initmesin[$row->id]['nama'] = $row->namamesin;
+					$initmesin[$row->id]['ip'] = $row->ipmesin;
+			}
+			$ipmesin = $initmesin[$codemesin]['ip'];
+			$namamesin = $initmesin[$codemesin]['nama'];
+			
+			$this->db->select('*');
+			$this->db->from('user');
+			$this->db->join('bagian', 'bagian.id = user.bagian');
+			$this->db->where('uid', $uid);
+			$query = $this->db->get();
+			$user = $query->row();
+			
+			if ($user->role==14) {
+				$role='LEVEL_ADMIN';
+			} else {
+				$role='LEVEL_USER';
+			}
+			
+			include_once APPPATH."third_party/zklib/zklib.php";
+			$zk = new ZKLib($ipmesin, 4370);
+			$ret = $zk->connect();
+			sleep(1);
+			if ( $ret ){
+				$zk->disableDevice();
+				sleep(1);
+				if($zk->enrollUser($user->pass)){
+					$zk->setUser((int)$user->pass, $user->uid, $user->nama, '', (int)$user->role);
+				}
+				$zk->enableDevice();
+				sleep(1);
+				$zk->disconnect();
+				$data['message']='success';
+				$data['data']= 'Go to Machine and Register';
+			} else {
+				$data['message']='failed';
+				$data['data']= 'Check Connection';
+			}
+			echo json_encode($data);
+		}
+
+		public function ajaxsendinfouser($codemesin, $uid) {
+			$this->db->order_by('namamesin', 'ASC');
+			$query = $this->db->get('mesin');
+			$data['daftarmesin'] = $query->result();
+			foreach ($query->result() as $row){
+					$initmesin[$row->id]['nama'] = $row->namamesin;
+					$initmesin[$row->id]['ip'] = $row->ipmesin;
+			}
+			$ipmesin = $initmesin[$codemesin]['ip'];
+			$namamesin = $initmesin[$codemesin]['nama'];
+			
+			$this->db->select('*');
+			$this->db->from('user');
+			$this->db->join('bagian', 'bagian.id = user.bagian');
+			$this->db->where('uid', $uid);
+			$query = $this->db->get();
+			$user = $query->row();
+			
+			include_once APPPATH."third_party/zklib/zklib.php";
+			$zk = new ZKLib($ipmesin, 4370);
+			$ret = $zk->connect();
+			sleep(1);
+			if ( $ret ){
+				$zk->disableDevice();
+				sleep(1);
+				$zk->setUser((int)$user->pass, $user->uid, $user->nama, '', (int)$user->role);
+				sleep(1);
+				$zk->enableDevice();
+				sleep(1);
+				$zk->disconnect();
+				$data['message']='success';
+				$data['data']= 'Sent Info User';
+			} else {
+				$data['message']='failed';
+				$data['data']= 'Check Connection';
+			}
+			echo json_encode($data);
+		}
+
+		public function ajaxtambahuser() {
+			//	belum selesai dan belum uji coba
+			// 	uid automatis perbagian (option //mesin tambahan//kode perusahaan//kode devisi ikut tabel//kode user max 100)
+			$this->db->order_by('pass', 'ASC');
+			$query = $this->db->get('user');
+			$last = $query->last_row();
+			$last = $last->pass + 1;
+			$query = $this->db->get_where('user', array('uid' => $this->input->post("tuid")));
+			if ($query->row()==NULL){
+				$data = array(
+					"uid" => $this->input->post("tuid"),
+					"nama"=> $this->input->post("tuser"),
+					"role" => $this->input->post("trole"),
+					"bagian" => $this->input->post("tdevisi"),
+					"pass" => $last
+				);
+				$this->db->insert('user', $data);
+				$response['message'] = 'success';
+				$response['data']= "User has been added.";
+			} else {
+				$response['message'] = 'failed';
+				$response['data']= "UID same user old.";
+			}
+			echo json_encode($response);
+		}
+
+		public function ajaxalldevisi()
+		{
+			$this->db->order_by('bnama', 'ASC');
+			$query = $this->db->get('bagian');
+			$hasil = $query->result();
+			$array = array();
+			$i=1;
+
+			foreach ($hasil as $a) {
+				array_push($array, [
+					'DT_RowId' => $a->id,
+					'no' => $i++,  
+					'bagian' =>$a->bnama, 
+					'delete' => "<b><svg class='text-danger deletedevisi' xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor' class='bi bi-x' viewBox='0 0 16 16'><path fill-rule='evenodd' d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/>
+						</svg></b>"
+				]);
+			}
+			$data['data'] = $array;
+			$data['message'] = 'success';
+
+			echo json_encode($data);
+		}
+		public function ajaxdeletedevisi (){
+			$this->db->where('id', $this->input->post('dbagian'));
+			$this->db->delete('bagian');
+			$response['message']='success';
+			$response['data'] = 'Position was deleted.';
+			echo json_encode($response);
+		}
+
+		public function ajaxtambahdevisi()
+		{
+			$pdata = $this->input->post('tbagian');
+			$data = array(
+					'id' =>"",
+					'bnama' => $pdata
+			);
+			if ($this->db->insert('bagian', $data)) {
+				$response['message']='success';
+				$response['data']='Position was added.';
+				echo json_encode($response);
+			}
+		}
 }

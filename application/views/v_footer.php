@@ -3,17 +3,9 @@
     <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
     <script src="<?= base_url(); ?>/berkas/js/jquery-3.5.1.min.js"></script>
     <script src="<?= base_url(); ?>/berkas/js/bootstrap.bundle.min.js"></script>
-    <script src="<?= base_url(); ?>/berkas/js/myjs.js"></script>
     <?php if ($jstable==1) : ?>
         <script src="<?= base_url(); ?>/berkas/js/jquery.dataTables.min.js"></script>
         <script src="<?= base_url(); ?>/berkas/js/dataTables.bootstrap4.min.js"></script>
-        <script type="text/javascript">
-            $(document).ready(function() {
-                $('#tabel1').DataTable({
-                    responsive: true
-                });
-            });
-        </script>
     <?php endif;?>
     <?php if ($jspicker==1) : ?>
         <script src="<?= base_url(); ?>/berkas/js/jquery.datetimepicker.full.min.js"></script>
@@ -41,6 +33,7 @@
             });
         </script>
     <?php endif;?>
+    <script src="<?= base_url(); ?>/berkas/js/myjs.js"></script>
 
     <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

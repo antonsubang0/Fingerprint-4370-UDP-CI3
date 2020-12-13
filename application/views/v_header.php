@@ -24,6 +24,11 @@
             <span class="sr-only">Loading...</span>
           </div>
       </div>
+      <div class="notifikasi-cs" style="display: none;">
+          <div class="alert" style="height: 50px;">
+              A simple danger alert—check it out!
+            </div>
+      </div>
       <nav class="navbar navbar-expand shadow-sm navbar-light bg-white fixed-top border-bottom border-danger">
             <a href="<?= base_url();?>" class="text-dark"><h3 class="title-cs align-middle">Attandance</h3></a>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
