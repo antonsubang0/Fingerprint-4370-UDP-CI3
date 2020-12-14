@@ -75,6 +75,12 @@ $(document).ready(function() {
         ]
     });
 
+    var tabeltarik = $('#tabeltarik').DataTable();
+    var tabelreport = $('#tabelreport').DataTable({
+        responsive: true,
+        pageLength: 100
+    });
+
     $('body').on('click','.managementuser', function(event) {
         event.preventDefault();
         /* Act on the event */
@@ -112,7 +118,7 @@ $(document).ready(function() {
                     type: 'post',
                     dataType: 'json',
                     data: {
-                        uid : $('#cuid').val(),
+                        uid : uid,
                         nama : $('#cuser').val(),
                         role : $('#crole').val(),
                         bagian : $('#cdevisi').val()
@@ -287,11 +293,16 @@ $(document).ready(function() {
             })
             .done(function(response) {
                 $('#modaldelete').modal('hide');
-                notifsuccess(response.data);
-                ini.addClass('text-danger');
-                setTimeout(function () {
-                    tabeldevisi.row('#'+ id).remove().draw( false );
-                }, 2000);
+                if (response.message=='success') {
+                    notifsuccess(response.data);
+                    ini.addClass('text-danger');
+                    setTimeout(function () {
+                        tabeldevisi.row('#'+ id).remove().draw( false );
+                    }, 2000);    
+                } else {
+                    notiffailed(response.data);
+                }
+                
             })
             .fail(function() {
                 notiffailed("Failed position deleted.")
@@ -321,5 +332,211 @@ $(document).ready(function() {
         } else {
             notiffailed('Form check again.');
         }
+    });
+    $('body').on('click', '.downloadabsen', function(event) {
+        event.preventDefault();
+        /* Act on the event */
+        var url = $(this).attr('href');
+        $('.loading-cs').show();
+        $.ajax({
+            url: url,
+            type: 'get',
+            dataType: 'json'
+        })
+        .done(function(response) {
+            if (response.message=='success') {
+                notifsuccess(response.data);
+            } else {
+                notiffailed(response.data);
+            }
+        })
+        .fail(function() {
+            notiffailed('Check Connection.');
+        });      
+    });
+    $('body').on('change', '#changeStatus', function(event) {
+        event.preventDefault();
+        /* Act on the event */
+        var no = $(this).parents('tr').attr('id');
+        var status = $(this).val();
+        var ini = $(this);
+        var warnatgl = $(this).parents('tr').children('td').eq(4);
+        $('.loading-cs').show();
+        $.ajax({
+            url: 'report/ajaxubahstatus',
+            type: 'post',
+            dataType: 'json',
+            data: { 
+                no : no,
+                status : status
+            },
+        })
+        .done(function(response) {
+            if (response.message=='success') {
+                notifsuccess(response.data);
+                if (status==0) {
+                    setTimeout(function () {
+                        ini.removeClass('text-warning');
+                        ini.removeClass('text-danger');
+                        ini.addClass('text-success');
+                        warnatgl.removeClass('text-warning');
+                        warnatgl.removeClass('text-danger');
+                        warnatgl.addClass('text-success');
+                    }, 1500);
+                } 
+                if (status==1) {
+                    setTimeout(function () {
+                        ini.removeClass('text-warning');
+                        ini.removeClass('text-success');
+                        ini.addClass('text-danger');
+                        warnatgl.removeClass('text-warning');
+                        warnatgl.removeClass('text-success');
+                        warnatgl.addClass('text-danger');
+                    }, 1500);
+                }
+                if (status==5) {
+                    setTimeout(function () {
+                        ini.removeClass('text-danger');
+                        ini.removeClass('text-success');
+                        ini.addClass('text-warning');
+                        warnatgl.removeClass('text-danger');
+                        warnatgl.removeClass('text-success');
+                        warnatgl.addClass('text-warning');
+                    }, 1500);
+                }
+            } else {
+                notiffailed(response.data);
+            }
+        })
+        .fail(function() {
+            notiffailed('Nothing Changed.');
+        });      
+    });
+    $('body').on('click', '.deleteabsensi', function(event) {
+        event.preventDefault();
+        /* Act on the event */
+        var id = $(this).parents('tr').attr('id');
+        var ini = $(this).parents('tr');
+        $("#modaldelete").modal('show');
+        $(".close").on('click', function(event) {
+            event.preventDefault();
+            /* Act on the event */
+            $("#modaldelete").modal('hide');
+            id = '';
+            ini = '';
+        });
+        $(".cancel").on('click', function(event) {
+            event.preventDefault();
+            /* Act on the event */
+            $("#modaldelete").modal('hide');
+            id = '';
+            ini = '';
+        });
+        $(".yadeleteabsen").on('click', function(event) {
+            event.preventDefault();
+            $('.loading-cs').show();
+            /* Act on the event */
+            $.ajax({
+                url: 'report/ajaxdeleteabsensi',
+                type: 'post',
+                dataType: 'json',
+                data: { no: id},
+            })
+            .done(function(response) {
+                $('#modaldelete').modal('hide');
+                if (response.message=='success') {
+                    notifsuccess(response.data);
+                    ini.addClass('text-danger');
+                    setTimeout(function () {
+                        tabelreport.row('#'+ id).remove().draw( false );
+                    }, 2000);
+                } else {
+                    notiffailed(response.data);
+                }
+            })
+            .fail(function() {
+                notiffailed('Error delete data');
+            });
+            
+        });
+    });
+    $('body').on('click', '.addrecord', function(event) {
+        event.preventDefault();
+        /* Act on the event */
+        $('#TambahAtt').modal('hide');
+        var num = $('#lastnum').html();
+        var uid = $('#ruser').val();
+        var status = $('#rstatus').val();
+        var time = $('#datetimepicker').val();
+        $.ajax({
+            url: 'report/ajaxaddabsensi',
+            type: 'post',
+            dataType: 'json',
+            data: { 
+                uid : uid,
+                inout : status,
+                time : time
+            },
+        })
+        .done(function(response) {
+            console.log(response.data1);
+            var tgla = new Date((response.data1.time-(90*60))*1000);
+            var tglb = tgla.toLocaleString('id-ID').split('/');
+            var tglc = tglb[2].split('.');
+            var tgld = tglb[0] + '-' +  tglb[1] +'-'+ tglc[0] + ':' + tglc[1] +':'+ tglc[2];
+            if (response.data1.inout==0) {
+                var inout = `<select id='changeStatus' class='form-control text-success' name='inout[]'>
+                                <option class='text-danger' value='1'>Keluar</option>
+                                <option class='text-success' value='0' selected>Masuk</option>
+                                <option class='text-warning' value='5'>Mengulang</option>
+                            </select>`;
+                var tgl = `<label class='text-success'>`+ tgld +`</label>`;
+            }
+            if (response.data1.inout==1) {
+                var inout = `<select id='changeStatus' class='form-control text-danger' name='inout[]'>
+                                <option class='text-danger' value='1' selected>Keluar</option>
+                                <option class='text-success' value='0'>Masuk</option>
+                                <option class='text-warning' value='5'>Mengulang</option>
+                            </select>`;
+                var tgl = `<label class='text-danger'>`+ tgld +`</label>`;
+            }
+
+            if (response.data1.inout==5) {
+                var inout = `<select id='changeStatus' class='form-control text-warning' name='inout[]'>
+                                <option class='text-danger' value='1'>Keluar</option>
+                                <option class='text-success' value='0'>Masuk</option>
+                                <option class='text-warning' value='5' selected>Mengulang</option>
+                            </select>`;
+                var tgl = `<label class='text-warning'>`+ tgld +`</label>`;
+            }
+              
+            if (response.message=='success') {
+                notifsuccess(response.data);
+                tabelreport.row.add( [
+                    num,
+                    response.data1.uid,
+                    response.data1.nama,
+                    response.data1.bnama,
+                    tgl,
+                    inout,
+                    "<b><svg class='text-danger deleteabsensi' xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor' class='bi bi-x' viewBox='0 0 16 16'><path fill-rule='evenodd' d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/></svg></b>"
+                ] ).draw( false ).node().id = response.data1.no;
+                num++;
+            } else {
+                notiffailed(response.data);
+            }
+        })
+        .fail(function() {
+            notiffailed('Failed add record.');
+        });
+    });
+    $('body').on('click', '#showhoriz', function() {
+        /* Act on the event */
+        $('.showcount').hide();
+        $('#showcount').prop('checked', false);
+    });
+    $('body').on('click', '#downloadhoriz', function() {
+        /* Act on the event */
+        $('.showcount').show();
     });
 });

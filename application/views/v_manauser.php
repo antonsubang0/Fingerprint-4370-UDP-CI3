@@ -123,7 +123,6 @@
 							</select>
 				  		</div>
 				  	</div>
-				  	<div class="dropdown-divider"></div>
 				  	<div class="form-row text-center">
 				  		<div class="col-md-6">
 				  			<button id="saveuser" class="btn btn-primary">Save</button>

@@ -21,7 +21,7 @@
                     </div>
                     <div class="row bg-light rounded-lg py-3 mx-1">
                         <div class="col overflow-auto" style="height: 50vh;">
-                            <table id="tabel1" class="table table-sm table-striped align-middle table-bordered" style="width:100%">
+                            <table id="tabeltarik" class="table table-sm table-striped align-middle table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -40,7 +40,7 @@
 										<td class="pt-3"><?= $i++ ?></td>
 										<td class="pt-3"><?= $row->namamesin; ?></td>
                                         <td class="pt-3"><?= ($statusMachine[$row->ipmesin]>0) ? "Disconnected" : "Connected"; ?></td>
-										<td><a class="btn btn-primary nav-ajs-cs <?= ($statusMachine[$row->ipmesin]>0) ? "disabled" : " "; ?>" href="<?= base_url("home/downloadabsen/")?><?= $row->id;?>">Download Data</a></td>
+										<td><a class="downloadabsen btn btn-primary <?= ($statusMachine[$row->ipmesin]>0) ? "disabled" : " "; ?>" href="<?= base_url("home/ajaxdownloadabsen/")?><?= $row->id;?>">Download Data</a></td>
 									</tr>
 									<?php endforeach;?>
                                 </tbody>

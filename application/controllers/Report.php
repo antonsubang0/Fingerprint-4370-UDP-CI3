@@ -137,6 +137,9 @@ class Report extends CI_Controller {
 			$data['stateawal']= date('d-m-Y');
 			// optional
 			$data['optcount'] = 0;
+			if ($this->input->post('showcount')) {
+				$data['optcount'] = 1;
+			}
 
 			if(!$this->input->post('group')=='' && $this->input->post('personal')==null){
 				$this->db->where('bagian', $this->input->post('group'));
@@ -229,5 +232,63 @@ class Report extends CI_Controller {
 				$this->session->set_flashdata('status', 'Failed to add the data.');
 			}
 			redirect('/report/');
+		}
+
+		public function ajaxubahstatus()
+		{
+			$response['message']='failed';
+			$response['data']= 'Data was not changed.';
+			if ($this->input->post('no')) {
+				$this->db->set('inout', $this->input->post('status') );
+				$this->db->where('no', $this->input->post('no'));
+				if ($this->db->update('att')){
+					$response['message']='success';
+					$response['data']= 'Data was changed.';
+				}
+			}
+			echo json_encode($response);
+		}
+
+		public function ajaxdeleteabsensi()
+		{
+			$response['message']='failed';
+			$response['data']= 'Data was not deleted.';
+			if ($this->input->post('no')) {
+				$this->db->where('no', $this->input->post('no'));
+				if ($this->db->delete('att')) {
+					$response['message']='success';
+					$response['data']= 'Data was deleted.';
+				}
+			}
+			echo json_encode($response);
+		}
+
+		public function ajaxaddabsensi()
+		{
+			if ($this->input->post('uid') !== '' && $this->input->post('inout') !== '' && $this->input->post('time') !== '') {
+				$data = array(
+					'no' => '',
+					'uid' => $this->input->post('uid'),
+					'inout' => $this->input->post('inout'),
+					'time' => strtotime($this->input->post('time')),
+					'mesin' => 0
+				);
+				if ($this->db->insert('att', $data)) {
+					$this->db->select('*');
+					$this->db->from('user');
+					$this->db->join('bagian', 'bagian.id = user.bagian');
+					$this->db->join('att', 'user.uid = att.uid');
+					$this->db->order_by('no', 'ASC');
+					$query = $this->db->get();
+					$response['data1'] = $query->last_row();
+				}
+
+				$response['message']='success';
+				$response['data']= 'Data was added.';
+			} else {
+				$response['message']='failed';
+				$response['data']= 'Data can not add.';
+			}
+			echo json_encode($response);
 		}
 }

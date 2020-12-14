@@ -58,15 +58,15 @@
 										</select>
 									</div>
 									<div class="col-8 ml-3 form-group form-check">
-										<div class="custom-control custom-radio custom-control-inline idshow1">
-											<input type="radio" id="show1" name="download" value="1" class="custom-control-input" checked>
-											<label class="custom-control-label" for="show1">Show</label>
+										<div class="custom-control custom-radio custom-control-inline">
+											<input type="radio" id="showhoriz" name="download" value="1" class="custom-control-input" checked>
+											<label class="custom-control-label" for="showhoriz">Show</label>
 										</div>
-										<div class="custom-control custom-radio custom-control-inline iddownload">
-											<input type="radio" id="download" name="download" value="2" class="custom-control-input">
-											<label class="custom-control-label" for="download">Download</label>
+										<div class="custom-control custom-radio custom-control-inline">
+											<input type="radio" id="downloadhoriz" name="download" value="2" class="custom-control-input">
+											<label class="custom-control-label" for="downloadhoriz">Download</label>
 										</div>
-										<div class="custom-control custom-checkbox custom-control-inline showcount">
+										<div class="custom-control custom-checkbox custom-control-inline showcount" style="display: none;">
 										  	<input type="checkbox" class="custom-control-input" id="showcount" name="showcount" value="1">
 										  	<label class="custom-control-label" for="showcount">Show Counting on Excel</label>
 										</div>

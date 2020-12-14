@@ -3,6 +3,11 @@
     z-index: 1;
 }
 
+tr.managementuser:hover {
+    cursor: pointer;
+    color: #aa88bb;
+}
+
 .loading-cs {
 	display: flex;
 	justify-content: center;
@@ -16,6 +21,14 @@
     vertical-align: middle;
     padding-top: 45vh;
     opacity: 0.5;
+}
+
+.deletedevisi, .deleteabsensi {
+    cursor: pointer;
+}
+.deletedevisi:hover, .deleteabsensi:hover {
+    color: #fff!important;
+    background-color: #000;
 }
 
 .notifikasi-cs {

@@ -87,60 +87,57 @@
                     </div>
                     <div class="row bg-light rounded-lg py-3 mx-1">
                         <div class="col overflow-auto" style="height: 50vh;">
-                        	<form method="post" action="<?= base_url();?>report/delabsensi">
-	                            <table id="tabel1" class="align-middle table table-sm table-striped table-bordered" style="width:100%">
-	                                <thead>
-                                        <tr>
-                                            <th>UID</th>
-											<th>ID</th>
-											<th>Name</th>
-											<th>Bagian</th>
-											<th>Waktu</th>
-											<th>In/Out</th>
-											<th>Hapus</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-										<?php $i=1;?>
-										<?php if ($tabel==!null):?>
-										<?php foreach ($tabel as $row):?>
-										<?php if($row->inout==1){
-												$inout="Keluar";
-											} else {
-												$inout="Masuk";
-										}?>
-											<tr>
-												<td><?= $i++;?></td>
-												<td><?= $row->uid;?></td>
-												<td><?= $row->nama;?></td>
-												<td><?= $row->bnama;?></td>
-												<td class="<?php if($row->inout==1){ echo "text-danger";} elseif ($row->inout==0) { echo "text-success"; } else { echo "text-warning"; } ?>"><?= date("d-m-Y H:i:s", $row->time); ?></td>
-												<td>
-													<select id="inputState" class="form-control <?php if($row->inout==1){ echo "text-danger";} elseif ($row->inout==0) { echo "text-success"; } else { echo "text-warning"; } ?>" name="inout[]">
-													<option class="text-danger" value="1,<?= $row->no; ?>" <?php if($row->inout==1){ echo "selected";} ?>>Keluar</option>
-													<option class="text-success" value="0,<?= $row->no; ?>" <?php if($row->inout==0){ echo "selected";} ?>>Masuk</option>
-													<option class="text-warning" value="5,<?= $row->no; ?>" <?php if($row->inout==5){ echo "selected";} ?>>Mengulang</option>
-													</select>
-												</td>
-												<td><input type="checkbox" name="absendelete[]" value="<?= $row->no; ?>"></td>
-											</tr>
-										<?php endforeach;?>
-										<?php endif; ?>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th>UID</th>
-											<th>ID</th>
-											<th>Name</th>
-											<th>Bagian</th>
-											<th>Waktu</th>
-											<th>In/Out</th>
-                                        </tr>
-                                    </tfoot>
-	                            </table>
-	                            <div class="row ml-2 mt-3"><button class="btn btn-primary nav-ajs-cs" type="submit">Ubah/Hapus</button>
-	                            </div>
-                            </form>      
+                            <table id="tabelreport" class="align-middle table table-sm table-striped table-bordered" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>UID</th>
+										<th>ID</th>
+										<th>Name</th>
+										<th>Bagian</th>
+										<th>Waktu</th>
+										<th>In/Out</th>
+										<th>Hapus</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+									<?php $i=1;?>
+									<?php if ($tabel==!null):?>
+									<?php foreach ($tabel as $row):?>
+									<?php if($row->inout==1){
+											$inout="Keluar";
+										} else {
+											$inout="Masuk";
+									}?>
+										<tr id="<?= $row->no; ?>">
+											<td><?= $i++;?></td>
+											<td><?= $row->uid;?></td>
+											<td><?= $row->nama;?></td>
+											<td><?= $row->bnama;?></td>
+											<td class="<?php if($row->inout==1){ echo "text-danger";} elseif ($row->inout==0) { echo "text-success"; } else { echo "text-warning"; } ?>"><?= date("d-m-Y H:i:s", $row->time); ?></td>
+											<td>
+												<select id="changeStatus" class="form-control <?php if($row->inout==1){ echo "text-danger";} elseif ($row->inout==0) { echo "text-success"; } else { echo "text-warning"; } ?>" name="inout[]">
+												<option class="text-danger" value="1" <?php if($row->inout==1){ echo "selected";} ?>>Keluar</option>
+												<option class="text-success" value="0" <?php if($row->inout==0){ echo "selected";} ?>>Masuk</option>
+												<option class="text-warning" value="5" <?php if($row->inout==5){ echo "selected";} ?>>Mengulang</option>
+												</select>
+											</td>
+											<td><b><svg class='text-danger deleteabsensi' xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor' class='bi bi-x' viewBox='0 0 16 16'><path fill-rule='evenodd' d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/></svg></b></td>
+										</tr>
+									<?php endforeach;?>
+									<?php endif; ?>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>UID</th>
+										<th>ID</th>
+										<th>Name</th>
+										<th>Bagian</th>
+										<th>Waktu</th>
+										<th>In/Out</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <div class="d-none" id='lastnum'><?= $i; ?></div>      
                         </div>
                     </div>
                 </div>
@@ -164,33 +161,51 @@
 			  			<span aria-hidden="true">&times;</span>
 					</button>
 		  		</div>
-		  		<form method="post" action="<?= base_url();?>report/addabsensi">
 		  		<div class="modal-body">
 			  		<div class="form-group">
-						<label for="nerw">User</label>
-						<select id="inputState" class="form-control" name="uid">
+						<label for="ruser">User</label>
+						<select id="ruser" class="form-control" name="uid">
 						<?php foreach ($add as $row):?>
 							<option value="<?= $row->uid;?>"><?= $row->bnama . " - " . $row->nama ?></option>
 						<?php endforeach;?>
 						</select>
 			  		</div>
 			  		<div class="form-group">
-						<label for="nerw">Status</label>
-						<select id="inputState" class="form-control" name="inout">
+						<label for="rstatus">Status</label>
+						<select id="rstatus" class="form-control" name="inout">
 							<option value="0">Masuk</option>
 							<option value="1">Keluar</option>
 						</select>
 			  		</div>
 			  		<div class="form-group">
-						<label for="nerw">Time</label>
+						<label for="datetimepicker">Time</label>
 						<input name="time" type="text" class="form-control" id="datetimepicker" autocomplete="off" required>
 						<!-- datetime-local -->
 			  		</div>
 		  		</div>
 		  		<div class="modal-footer">
-					<button type="submit" class="btn btn-primary">Save</button>
+					<button class="addrecord btn btn-primary">Save</button>
 		  		</div>
-		  		</form>
 			</div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modaldelete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ask</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h6>Are you want delete ?</h6>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary cancel">Cancel</button>
+                    <button class="btn btn-danger yadeleteabsen">Yes</button>
+                </div>
+            </div>
         </div>
     </div>
