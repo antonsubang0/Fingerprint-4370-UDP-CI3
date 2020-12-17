@@ -19,7 +19,7 @@
                     </div>
                     <div class="row bg-light rounded-lg py-3 mx-1">
                         <div class="col overflow-auto" style="height: 50vh;">
-                            <table id="tabel1" class="table table-sm table-striped table-bordered align-middle" style="width:100%">
+                            <table id="tabeluser" class="table table-sm table-striped table-bordered align-middle" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>UID</th>
@@ -32,7 +32,7 @@
                                 </thead>
                                 <tbody>
 								<?php
-								while(list($uid, $userdata) = each($user)):
+								foreach ($user as $uid => $userdata) :
 									if ($userdata[4] == 14)
 										$role = 'ADMIN';
 									elseif ($userdata[4] == 0)
@@ -53,7 +53,7 @@
 									<td><?php echo $userdata[3] ?>&nbsp;</td>
 								</tr>
 								<?php
-								endwhile; ?>
+								endforeach; ?>
                                 </tbody>
                                 <tfoot>
                                     <tr>

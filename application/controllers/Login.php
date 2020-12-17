@@ -15,17 +15,17 @@ class Login extends CI_Controller {
 		if ($this->input->post()) {
 			$username = $this->input->post('username');
 			$password = $this->input->post('password');
+			$ip = $this->input->ip_address();
 			$this->db->where('username', $username);
 			$query = $this->db->get('useradmin');
 			$result = $query->row_array();
 			if($result) {
-				if (time() - $result['time'] > 300 || $this->input->ip_address() == $result['ip']) {
+				if (time() - $result['time'] > 300 || $ip == $result['ip']) {
 					if (password_verify($password,$result['password'])) {
 						$this->session->set_userdata('username', $username);
 						$this->session->set_userdata('role', $result['rule']);
-						$this->session->set_userdata('ip', $this->input->ip_address());
-						$this->db->set('ip', $this->input->ip_address());
-						$this->db->set('time', time());
+						$this->session->set_userdata('ip', $ip);
+						$this->db->set('ip', $ip);
 						$this->db->where('username', $username);
 						$this->db->update('useradmin');
 						if($result['rule']=='absen'){

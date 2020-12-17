@@ -10,7 +10,6 @@ class Report extends CI_Controller {
 			parent::__construct();
 			$role = 'absen';
 			isLogged($role);
-			autologout();
 		}
 		
     	public function index()

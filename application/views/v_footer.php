@@ -6,6 +6,61 @@
     <?php if ($jstable==1) : ?>
         <script src="<?= base_url(); ?>/berkas/js/jquery.dataTables.min.js"></script>
         <script src="<?= base_url(); ?>/berkas/js/dataTables.bootstrap4.min.js"></script>
+        <script type="text/javascript">
+            var table = $('#cobacoba').DataTable({
+                responsive: true,
+                pageLength: 100,
+                ajax : 'ajaxalldata',
+                createdRow : function( row, data, dataIndex ) {
+                    $(row).addClass('managementuser');
+                },
+                columns : [
+                    { "data": "no" },
+                    { "data": "uid" },
+                    { "data": "nama" },
+                    { "data": "role" },
+                    { "data": "bagian" }
+                ]
+            });
+            var tabeldevisi = $('#tabeldevisi').DataTable({
+                responsive: true,
+                pageLength: 10,
+                ajax : 'ajaxalldevisi',
+                createdRow : function( row, data, dataIndex ) {
+                    $(row).addClass('managementdevisi');
+                },
+                columns : [
+                    { "data": "no" },
+                    { "data": "bagian" },
+                    { "data": "delete" }
+                ]
+            });
+
+            var tabeltarik = $('#tabeltarik').DataTable();
+            var tabelreport = $('#tabelreport').DataTable({
+                responsive: true,
+                pageLength: 100
+            });
+            var tabelreport = $('#tabeluser').DataTable({
+                responsive: true,
+                pageLength: 100
+            });
+            var tabelmachine = $('#tabelmachine').DataTable({
+                responsive: true,
+                pageLength: 10,
+                ajax : 'setting/ajaxdaftarmesin',
+                createdRow : function( row, data, dataIndex ) {
+                    $(row).addClass('managementmesin');
+                },
+                columns : [
+                    { "data": "no" },
+                    { "data": "namamesin" },
+                    { "data": "ipmesin" },
+                    { "data": "restart" },
+                    { "data": "delete" }
+                ]
+            });
+        </script>
     <?php endif;?>
     <?php if ($jspicker==1) : ?>
         <script src="<?= base_url(); ?>/berkas/js/jquery.datetimepicker.full.min.js"></script>

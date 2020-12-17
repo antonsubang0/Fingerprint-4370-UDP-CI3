@@ -5,13 +5,12 @@ date_default_timezone_set('Asia/Kolkata');
  
 class Setting extends CI_Controller {
 	
-		public function __construct() 
-		{
-			parent::__construct();
-			$role = 'absen';
-			isLogged($role);
-			autologout();
-		}
+		// public function __construct() 
+		// {
+		// 	parent::__construct();
+		// 	$role = 'absen';
+		// 	isLogged($role);
+		// }
 		
     	public function index() {
     		$data['jstable']=1;
@@ -35,13 +34,19 @@ class Setting extends CI_Controller {
 		
 		public function addmachine() {
 			if ($this->input->post('ip') !=='' && $this->input->post('nama') !=='') {
-				$data = array(
-					'id' => '',
-					'ipmesin' => $this->input->post('ip'),
-					'namamesin' =>$this->input->post('nama')
-				);
-				$this->db->insert('mesin', $data);
-				$this->session->set_flashdata('status', 'Success added the machine.');
+				$query = $this->db->get_where('mesin', array('ipmesin' => $this->input->post('ip')));
+
+				if ($query->row()==NULL) {
+					$data = array(
+						'id' => '',
+						'ipmesin' => $this->input->post('ip'),
+						'namamesin' =>$this->input->post('nama')
+					);
+					$this->db->insert('mesin', $data);
+					$this->session->set_flashdata('status', 'Success added the machine.');
+				} else {
+					$this->session->set_flashdata('status', 'Failed to add the machine.');
+				}
 			} else {
 				$this->session->set_flashdata('status', 'Failed to add the machine.');
 			}
@@ -137,64 +142,116 @@ class Setting extends CI_Controller {
 		}
 		
 		public function payroll() {
-			$this->session->set_userdata('report', 0);
+			echo "back to home....";
+		}
+
+		public function ajaxdaftarmesin() {
 			$this->db->order_by('namamesin', 'ASC');
 			$query = $this->db->get('mesin');
-			$data['daftarmesin'] = $query->result();
-			// status Machine
-			$data['statusMachine']=[];
-			$statusMachine = $data['daftarmesin'];
-			foreach ($statusMachine as $status) {
-				$hasilStatus = statusMachine($status->ipmesin);
-				$data['statusMachine'][$status->ipmesin]=$hasilStatus;
+			$data = $query->result();
+			$result = array();
+			$i=1;
+			foreach ($data as $key => $row) {
+				$idmesin = $row->id;
+				$statusmesin='';
+				if(statusMachine($row->ipmesin) > 0) {
+					$statusmesin = 'disabled';
+				}
+				$d = [
+					'DT_RowId' => $row->id,
+					'no' => $i,
+					'namamesin' => $row->namamesin,
+					'ipmesin' => $row->ipmesin,
+					'restart' => "<a class='btn btn-success mb-1 nav-ajs-cs restartmesin $statusmesin' data-mesin='$idmesin' href=''>Restart</a>",
+					'delete' => "<a class='btn btn-danger mb-1 nav-ajs-cs deletemesin' data-mesin='$idmesin' href=''>Delete</a>"
+				];
+				array_push($result, $d);
+				$i++;
 			}
-			$this->db->order_by('bnama', 'ASC');
-			$query = $this->db->get('bagian');
-			$data['bagian'] = $query->result();
-			$this->db->select('*');
-			$this->db->from('user');
-			$this->db->join('bagian', 'bagian.id = user.bagian');
-			$query = $this->db->get();
-			$data['add'] = $query->result();
-			$data['user'] = '';
-			$data['tabel'] = ''; 
-			if(!$this->input->post('group')=='' && $this->input->post('personal')==null){
-				$this->db->where('bagian', $this->input->post('group'));
-				$query = $this->db->get('user');
-				$data['user'] = $query->result();
-				$this->db->select('*');
-				$this->db->from('user');
-				$this->db->join('bagian', 'bagian.id = user.bagian');
-				$this->db->join('att', 'user.uid = att.uid');
-				$this->db->where('bagian', $this->input->post('group'));
-				$this->db->where('time >=', strtotime($this->input->post('awal')));
-				$this->db->where('time <=', strtotime($this->input->post('akhir'))+(60*60*24));
-				$this->db->order_by('nama', 'ASC');
-				$this->db->order_by('time', 'ASC');
-				$query = $this->db->get();
-				$data['tabel'] = $query->result();
-				//var_dump(date_format(date_create($this->input->post('awal')),"Y-m-d H:i:s"));die();
+			$response['message']='success';
+			$response['data']=$result;
+			echo json_encode($response);
+		}
+
+		public function ajaxdeletemesin($id){
+			if ($id) {
+				$this->db->where('id', $id);
+				$this->db->delete('mesin');
+				$response['message']='success';
+				$response['data']='Machine was deleted.';
+			} else {
+				$response['message']='failed';
+				$response['data']='Machine was not deleted.';
 			}
-			
-			if($this->input->post('group')==!null && $this->input->post('personal')==!null){
-				$this->db->where('bagian', $this->input->post('group'));
-				$query = $this->db->get('user');
-				$data['user'] = $query->result();
-				$this->db->select('*');
-				$this->db->from('user');
-				$this->db->join('bagian', 'bagian.id = user.bagian');
-				$this->db->join('att', 'user.uid = att.uid');
-				$this->db->where('bagian', $this->input->post('group'));
-				$this->db->where_in('user.uid', $this->input->post('personal'));
-				$this->db->where('time >=', strtotime($this->input->post('awal')));
-				$this->db->where('time <=', strtotime($this->input->post('akhir'))+(60*60*24));
-				$this->db->order_by('nama', 'ASC');
-				$this->db->order_by('time', 'ASC');
-				$query = $this->db->get();
-				$data['tabel'] = $query->result();
+			echo json_encode($response);
+		}
+
+		public function ajaxrestartmesin($id){
+			if ($id) {
+				// mengambil data mesin
+				$this->db->order_by('namamesin', 'ASC');
+				$query = $this->db->get('mesin');
+				// variabel data mesin di view
+				$data['daftarmesin'] = $query->result();
+				// mengambil IP mesin untuk koneksi
+				foreach ($query->result() as $row){
+						$initmesin[$row->id]['nama'] = $row->namamesin;
+						$initmesin[$row->id]['ip'] = $row->ipmesin;
+				}
+				$ipmesin = $initmesin[$id]['ip'];
+				$namamesin = $initmesin[$id]['nama'];
+
+				include_once APPPATH."third_party/zklib/zklib.php";
+				$zk = new ZKLib("$ipmesin", 4370);
+				$ret = $zk->connect();
+				sleep(1);
+				if ( $ret ){
+					$zk->disableDevice();
+					sleep(1);
+					$zk->restart();
+					$zk->enableDevice();
+					sleep(1);
+					$zk->disconnect();
+					$response['message']='success';
+					$response['data']='Machine was restarted.';
+				} else {
+					$response['message']='failed';
+					$response['data']='Machine is not connected.';
+				}
+			} else {
+				$response['message']='failed';
+				$response['data']='Machine failed to restart.';
 			}
-			$this->load->view('vheader', $data);	
-			$this->load->view('vabsensi', $data);
-			$this->load->view('vfooter');
+			echo json_encode($response);
+		}
+
+		public function ajaxaddmesin(){
+			$response['message']='failed';
+			$response['data']='Failed to add the machine';
+			if ($this->input->post('ip') !=='' && $this->input->post('nama') !=='') {
+				$ipmesin = $this->input->post('ip');
+				$namamesin = $this->input->post('nama');
+				
+				$query = $this->db->get_where('mesin', array('ipmesin' => $this->input->post('ip')));
+
+				if ($query->row()==NULL) {
+					$data = array(
+						'id' => '',
+						'ipmesin' => $ipmesin,
+						'namamesin' => $namamesin
+					);
+					if ($this->db->insert('mesin', $data)) {
+						$response['message']='success';
+						$response['data']='Success added the machine.';
+					}
+				} else {
+					$response['message']='failed';
+					$response['data']='Failed add machine.';
+				}
+			} else {
+				$response['message']='failed';
+				$response['data']='Failed add machine.';
+			}
+			echo json_encode($response);
 		}
 }

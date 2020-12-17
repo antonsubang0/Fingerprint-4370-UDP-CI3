@@ -16,7 +16,7 @@ $(document).ready(function() {
     $('.nav-ajs-cs').on("click", function () {
         $('.loading-cs').show();
 
-        if ($('#download').is(":checked")){
+        if ($('#downloadhoriz').is(":checked")){
             setTimeout ( function () {
                 $('.loading-cs').hide();
             }, 3000);
@@ -44,42 +44,6 @@ $(document).ready(function() {
             $('.notifikasi-cs').hide();
         }, 1000);
     }
-
-    var table = $('#cobacoba').DataTable({
-        responsive: true,
-        pageLength: 100,
-        ajax : 'ajaxalldata',
-        createdRow : function( row, data, dataIndex ) {
-            $(row).addClass('managementuser');
-        },
-        columns : [
-            { "data": "no" },
-            { "data": "uid" },
-            { "data": "nama" },
-            { "data": "role" },
-            { "data": "bagian" }
-        ]
-    });
-
-    var tabeldevisi = $('#tabeldevisi').DataTable({
-        responsive: true,
-        pageLength: 10,
-        ajax : 'ajaxalldevisi',
-        createdRow : function( row, data, dataIndex ) {
-            $(row).addClass('managementdevisi');
-        },
-        columns : [
-            { "data": "no" },
-            { "data": "bagian" },
-            { "data": "delete" }
-        ]
-    });
-
-    var tabeltarik = $('#tabeltarik').DataTable();
-    var tabelreport = $('#tabelreport').DataTable({
-        responsive: true,
-        pageLength: 100
-    });
 
     $('body').on('click','.managementuser', function(event) {
         event.preventDefault();
@@ -338,6 +302,7 @@ $(document).ready(function() {
         /* Act on the event */
         var url = $(this).attr('href');
         $('.loading-cs').show();
+        console.log(url);
         $.ajax({
             url: url,
             type: 'get',
@@ -538,5 +503,76 @@ $(document).ready(function() {
     $('body').on('click', '#downloadhoriz', function() {
         /* Act on the event */
         $('.showcount').show();
+    });
+    $('body').on('click', '.restartmesin', function(event) {
+        event.preventDefault();
+        /* Act on the event */
+        var mesin = $(this).data('mesin');
+        $.ajax({
+            url: 'setting/ajaxrestartmesin/' + mesin,
+            type: 'get',
+            dataType: 'json'
+        })
+        .done(function(response) {
+            if (response.message=='success') {
+                notifsuccess(response.data);
+                tabelreport.ajax.reload();
+            } else {
+                notiffailed(response.data);
+            }
+        })
+        .fail(function() {
+            notiffailed('Error.');
+        });   
+    });
+    $('body').on('click', '.deletemesin', function(event) {
+        event.preventDefault();
+        /* Act on the event */
+        var mesin = $(this).data('mesin');
+        $.ajax({
+            url: 'setting/ajaxdeletemesin/' + mesin,
+            type: 'get',
+            dataType: 'json'
+        })
+        .done(function(response) {
+            if (response.message=='success') {
+                notifsuccess(response.data);
+                tabelmachine.ajax.reload();
+            } else {
+                notiffailed(response.data);
+            }
+        })
+        .fail(function() {
+            notiffailed('Error.');
+        });   
+    });
+    $('body').on('click', '#addmachine', function(event) {
+        event.preventDefault();
+        /* Act on the event */
+        var namamesin = $('#addnamamesin').val();
+        var ipmesin = $('#addipmesin').val();
+        $.ajax({
+            url: 'setting/ajaxaddmesin',
+            type: 'post',
+            dataType: 'json',
+            data: {
+                ip : ipmesin,
+                nama : namamesin
+            },
+        })
+        .done(function(response) {
+            if (response.message=='success') {
+                notifsuccess(response.data);
+                tabelmachine.ajax.reload();
+                $('#exampleModal').modal('hide');
+                $('#addnamamesin').val('');
+                $('#addipmesin').val('');
+            } else {
+                notiffailed(response.data);
+            }
+        })
+        .fail(function() {
+            notiffailed('Error');
+        });
     });
 });

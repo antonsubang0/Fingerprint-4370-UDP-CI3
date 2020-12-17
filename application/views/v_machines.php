@@ -19,7 +19,7 @@
                     </div>
                     <div class="row bg-light rounded-lg py-3 mx-1">
                         <div class="col overflow-auto" style="height: 50vh;">
-                            <table id="tabel1" class="table table-sm table-striped table-bordered align-middle" style="width:100%">
+                            <table id="tabelmachine" class="table table-sm table-striped table-bordered align-middle" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -30,26 +30,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-								
-								<?php
-								$i=1;
-								
-								foreach ($daftarmesin as $row) :
-								?>
-								<tr>
-									<td><?= $i++ ?></td>
-									<td><?= $row->namamesin; ?></td>
-									<td><?= $row->ipmesin;?></td>
-									<td><a class="btn btn-success mb-1 nav-ajs-cs <?= ($statusMachine[$row->ipmesin]>0) ? "disabled" : " "; ?>" href="<?= base_url("setting/restart/")?><?= $row->id;?>">Restart</a></td>
-									<td><a class="btn btn-danger mb-1" href="<?= base_url("setting/delmachine/")?><?= $row->id;?>">Delete</a></td>
-								</tr>
-								<?php endforeach;?>
                                 </tbody>
 								<tfoot>
 								</tfoot>
                             </table>      
                         </div>
                     </div>
+                    <div id="numlast" class="d-none"><?= $i; ?></div>
                 </div>
             </div>
             <div class="row mx-1 mt-3 border-danger bg-white pt-3 pb-3 border-top shadow rounded-lg-top">
@@ -74,16 +61,16 @@
 			  	<form method="post" action="<?= base_url();?>setting/addmachine">
 			  	<div class="modal-body">
 				  	<div class="form-group">
-						<label for="nerw">Name Machine</label>
-						<input name="nama" type="text" class="form-control" id="nerw" aria-describedby="emailHelp">
+						<label for="namamesin">Name Machine</label>
+						<input name="nama" type="text" class="form-control" id="addnamamesin" aria-describedby="emailHelp">
 				  	</div>
 				  	<div class="form-group">
-						<label for="nerq">IP Machine</label>
-						<input name="ip" type="text" class="form-control" id="nerq" aria-describedby="emai">
+						<label for="ipmesin">IP Machine</label>
+						<input name="ip" type="text" class="form-control" id="addipmesin" aria-describedby="emai">
 				  	</div>
 			  	</div>
 			  	<div class="modal-footer">
-					<button type="submit" class="btn btn-primary">Save</button>
+					<button type="submit" id="addmachine" class="btn btn-primary">Save</button>
 			  	</div>
 			  	</form>
 			</div>

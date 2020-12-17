@@ -20,23 +20,13 @@ function isLogged($role) {
 				redirect(base_url('warehouse'));
 			}
 		}
-	}
-}
-
-
-function autologout()
-{
-	$ci = get_instance();
-	$username = $ci->session->userdata('username');
-	$ci->db->where('username', $username);
-	$query = $ci->db->get('useradmin');
-	$result = $query->row_array();
-	if ($ci->input->ip_address() !== $result['ip']) {		
-		redirect(base_url('login/logout'));
-	} else {
-		$ci->db->set('time', time());
-		$ci->db->where('username', $username);
-		$ci->db->update('useradmin');
+		if ($ci->input->ip_address() !== $result['ip']) {		
+			redirect(base_url('login/logout'));
+		} else {
+			$ci->db->set('time', time());
+			$ci->db->where('username', $username);
+			$ci->db->update('useradmin');
+		}
 	}
 }
 

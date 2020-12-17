@@ -10,7 +10,6 @@ class Home extends CI_Controller {
 		parent::__construct();
 		$role = 'absen';
 		isLogged($role);
-		autologout();
 	}
 	
 	public function index()
@@ -82,7 +81,7 @@ class Home extends CI_Controller {
 			sleep(1);
 			$zk->disconnect();
 		} else {
-			$user=[[1,'notfound',1,1]];
+			$user=[[1,'notfound',1,1,0]];
 			$data['user'] = $user;
 			$data['mesin'] = $namamesin;
 		}
@@ -116,7 +115,8 @@ class Home extends CI_Controller {
 		}
 		
 		if ($user) {
-			while(list($uid, $userdata) = each($user)) {
+			foreach ($user as $key => $userdata) {
+
 				$query = $this->db->get_where('user', array('uid' => $userdata[0]));
 				
 				if ($query->row()==NULL){
@@ -221,7 +221,7 @@ class Home extends CI_Controller {
 			$zk->disconnect();
 		}
 		if ($user) {
-			while(list($uid, $userdata) = each($user)) {
+			foreach ($user as $key => $userdata) {
 				$query = $this->db->get_where('att', array('time' => strtotime($userdata[3]), 'uid' => $userdata[0])); //cek time dan user
 				$hasil = $query->row();
 				//jika time dan user null, time harus lebih dari sama dengan database terakhir dimesin, maka data diinsert
@@ -584,8 +584,18 @@ class Home extends CI_Controller {
 		if ( $ret ){
 			$zk->disableDevice();
 			sleep(1);
-			if($zk->enrollUser($user->pass)){
-				$zk->setUser((int)$user->pass, $user->uid, $user->nama, '', (int)$user->role);
+			$user = $zk->getUser();
+			if ($user) {
+				$arraymax=array();
+				foreach ($user as $key => $value) {
+					array_push($arraymax, $value[3]);
+				}
+				$max=max($arraymax) + 1;
+			} else {
+				$max=1;
+			}
+			if($zk->enrollUser($max)){
+				$zk->setUser((int)$max, $user->uid, $user->nama, '', (int)$user->role);
 			}
 			$zk->enableDevice();
 			sleep(1);
@@ -624,7 +634,24 @@ class Home extends CI_Controller {
 		if ( $ret ){
 			$zk->disableDevice();
 			sleep(1);
-			$zk->setUser((int)$user->pass, $user->uid, $user->nama, '', (int)$user->role);
+			$user = $zk->getUser();
+			if ($user) {
+				$arraymax=array();
+				$arrayuser=array();
+				foreach ($user as $key => $value) {
+					array_push($arraymax, $value[3]);
+					$arrayuser[$value[0]]=$value[3];
+				}
+				$pas=$arrayuser[$user->uid];
+				if ($pas==null) {
+					$pass = max($arraymax) + 1;
+				} else {
+					$pass = $pas;
+				}
+			} else {
+				$pass=1;
+			}
+			$zk->setUser((int)$pass, $user->uid, $user->nama, '', (int)$user->role);
 			sleep(1);
 			$zk->enableDevice();
 			sleep(1);
@@ -716,8 +743,8 @@ class Home extends CI_Controller {
 	public function ajaxdownloadabsen($id) {
 		// mengambil data mesin
 		if (!$id) {
-			$this->session->set_flashdata('statusgagal', "Select Machine is not Found");
-			redirect('/home/download/');
+			$response['message']= 'failed';
+			$response['data'] = "Machine is not connect.";
 		}
 
 		$this->db->order_by('namamesin', 'ASC');
@@ -754,7 +781,7 @@ class Home extends CI_Controller {
 			sleep(1);
 			$zk->disconnect();
 			if ($user) {
-				while(list($uid, $userdata) = each($user)) {
+				foreach ($user as $key => $userdata) {
 					$query = $this->db->get_where('att', array('time' => strtotime($userdata[3]), 'uid' => $userdata[0])); //cek time dan user
 					$hasil = $query->row();
 					//jika time dan user null, time harus lebih dari sama dengan database terakhir dimesin, maka data diinsert
@@ -802,6 +829,55 @@ class Home extends CI_Controller {
 			$response['data'] = "Machine is not connect.";
 		}
 		
+		echo json_encode($response);
+	}
+
+	public function ajaxtodownloaduser($id="1"){
+		$this->db->order_by('namamesin', 'ASC');
+		$query = $this->db->get('mesin');
+		$data['daftarmesin'] = $query->result();
+		foreach ($query->result() as $row){
+				$initmesin[$row->id]['nama'] = $row->namamesin;
+				$initmesin[$row->id]['ip'] = $row->ipmesin;
+		}
+		$ipmesin = $initmesin[$id]['ip'];
+		$namamesin = $initmesin[$id]['nama'];
+		include_once APPPATH."third_party/zklib/zklib.php";
+		$zk = new ZKLib("$ipmesin", 4370);
+		$ret = $zk->connect();
+		sleep(1);
+		if ( $ret ){
+			$zk->disableDevice();
+			sleep(1);
+			$user = $zk->getUser();
+			$zk->enableDevice();
+			sleep(1);
+			$zk->disconnect();
+			if ($user) {
+				foreach ($user as $key => $userdata) {
+					$query = $this->db->get_where('user', array('uid' => $userdata[0]));
+					if ($query->row()==NULL){
+						$data = array(
+						'id' => NULL,
+						'uid' => $userdata[0],
+						'nama' => $userdata[1],
+						'role' => $userdata[4],
+						'pass' => $userdata[3],
+						'bagian' => 99
+						);
+						$this->db->insert('user', $data);
+					}
+				}
+				$response['message'] = 'success';
+				$response['data'] = "Success Download Att. Machine $namamesin to Database.";
+			} else {
+				$response['message'] = 'failed';
+				$response['data'] = "No User From Att. Machine $namamesin.";
+			}
+		} else {
+			$response['message'] = 'failed';
+			$response['data'] = "Machine $namamesin is not connection.";
+		}
 		echo json_encode($response);
 	}
 
