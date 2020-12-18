@@ -35,6 +35,7 @@
             include_once("zkuser.php");
             include_once("zkattendance.php");
             include_once("zktime.php");
+            include_once("zktemplate.php");
         }
         
         
@@ -189,6 +190,11 @@
         
         public function setUser($uid, $userid, $name, $password, $role) {
             return zksetuser($this, $uid, $userid, $name, $password, $role);
+        }
+
+        public function getUserTemplateAll($uid)
+        {
+            return getUserTemplateAllx($this, $uid);
         }
         
         public function getFP() {

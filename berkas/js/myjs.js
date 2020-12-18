@@ -1,5 +1,4 @@
 $(document).ready(function() {
-    console.log(location.href);
     $("a[href$='"+ location.href +"']").parents('.collapse').addClass('show');
     $("a[href$='"+ location.href +"']").parent('li').addClass('bg-selector');
     $("a[href$='"+ location.href +"']").removeClass('text-body');
@@ -44,7 +43,27 @@ $(document).ready(function() {
             $('.notifikasi-cs').hide();
         }, 1000);
     }
-
+    $('body').on('click', '.downloaduser', function(event) {
+        event.preventDefault();
+        /* Act on the event */
+        var url = $(this).attr('href');
+        $('.loading-cs').show();
+        $.ajax({
+            url: url,
+            type: 'get',
+            dataType: 'json'
+        })
+        .done(function(response) {
+            if (response.message=='success') {
+                notifsuccess(response.data);
+            } else {
+                notiffailed(response.data);
+            }
+        })
+        .fail(function() {
+            notiffailed('Check Connection.');
+        });  
+    });
     $('body').on('click','.managementuser', function(event) {
         event.preventDefault();
         /* Act on the event */
@@ -185,7 +204,7 @@ $(document).ready(function() {
             });
         })
         .fail(function() {
-            console.log("error");
+            notiffailed("Error.");
         });
     });
     $('body').on('click', '#tambahuser', function(event) {
@@ -230,7 +249,6 @@ $(document).ready(function() {
         /* Act on the event */
         var ini = $(this).parents('tr');
         var id = $(this).parents('tr').attr('id');
-        console.log(id);
         $("#modaldelete").modal('show');
         $(".close").on('click', function(event) {
             event.preventDefault();
@@ -265,8 +283,7 @@ $(document).ready(function() {
                     }, 2000);    
                 } else {
                     notiffailed(response.data);
-                }
-                
+                }                
             })
             .fail(function() {
                 notiffailed("Failed position deleted.")
@@ -286,13 +303,17 @@ $(document).ready(function() {
             })
             .done(function(response) {
                 $('#exampleModal').modal('hide');
-                notifsuccess(response.data);
-                tabeldevisi.ajax.reload(); 
+                if (response.message=='success') {
+                    notifsuccess(response.data);
+                    tabeldevisi.ajax.reload();    
+                } else {
+                    notiffailed(response.data);
+                }
+                 
             })
             .fail(function() {
                 notiffailed('Error position to be add.')
             });
-            
         } else {
             notiffailed('Form check again.');
         }
@@ -302,7 +323,6 @@ $(document).ready(function() {
         /* Act on the event */
         var url = $(this).attr('href');
         $('.loading-cs').show();
-        console.log(url);
         $.ajax({
             url: url,
             type: 'get',
@@ -444,7 +464,6 @@ $(document).ready(function() {
             },
         })
         .done(function(response) {
-            console.log(response.data1);
             var tgla = new Date((response.data1.time-(90*60))*1000);
             var tglb = tgla.toLocaleString('id-ID').split('/');
             var tglc = tglb[2].split('.');
@@ -485,7 +504,7 @@ $(document).ready(function() {
                     tgl,
                     inout,
                     "<b><svg class='text-danger deleteabsensi' xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor' class='bi bi-x' viewBox='0 0 16 16'><path fill-rule='evenodd' d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/></svg></b>"
-                ] ).draw( false ).node().id = response.data1.no;
+                ]).draw( false ).node().id=response.data1.no;
                 num++;
             } else {
                 notiffailed(response.data);
@@ -516,7 +535,7 @@ $(document).ready(function() {
         .done(function(response) {
             if (response.message=='success') {
                 notifsuccess(response.data);
-                tabelreport.ajax.reload();
+                tabelmachine.ajax.reload();
             } else {
                 notiffailed(response.data);
             }

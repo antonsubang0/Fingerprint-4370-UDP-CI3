@@ -41,7 +41,7 @@
                 responsive: true,
                 pageLength: 100
             });
-            var tabelreport = $('#tabeluser').DataTable({
+            var tabeluser = $('#tabeluser').DataTable({
                 responsive: true,
                 pageLength: 100
             });

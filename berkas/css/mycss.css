@@ -8,6 +8,10 @@ tr.managementuser:hover {
     color: #aa88bb;
 }
 
+tr.reportstyle:hover {
+    color: #aa88bb;
+}
+
 .loading-cs {
 	display: flex;
 	justify-content: center;

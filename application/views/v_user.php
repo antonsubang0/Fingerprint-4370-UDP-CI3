@@ -14,7 +14,7 @@
                             <small>Data User on <?= $mesin; ?></small>
                         </div>
                         <div class="col-md-2 col-3 text-right">
-                            <a class="btn btn-primary" href="<?= base_url();?>home/downloaduser/<?= $idmesin; ?>">Download</a>
+                            <a class="btn btn-primary downloaduser" href="<?= base_url();?>home/ajaxtodownloaduser/<?= $idmesin; ?>">Download</a>
                         </div>
                     </div>
                     <div class="row bg-light rounded-lg py-3 mx-1">

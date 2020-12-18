@@ -5,12 +5,12 @@ date_default_timezone_set('Asia/Kolkata');
  
 class Setting extends CI_Controller {
 	
-		// public function __construct() 
-		// {
-		// 	parent::__construct();
-		// 	$role = 'absen';
-		// 	isLogged($role);
-		// }
+		public function __construct() 
+		{
+			parent::__construct();
+			$role = 'absen';
+			isLogged($role);
+		}
 		
     	public function index() {
     		$data['jstable']=1;
@@ -146,6 +146,7 @@ class Setting extends CI_Controller {
 		}
 
 		public function ajaxdaftarmesin() {
+			//success
 			$this->db->order_by('namamesin', 'ASC');
 			$query = $this->db->get('mesin');
 			$data = $query->result();
@@ -174,6 +175,7 @@ class Setting extends CI_Controller {
 		}
 
 		public function ajaxdeletemesin($id){
+			//success
 			if ($id) {
 				$this->db->where('id', $id);
 				$this->db->delete('mesin');
@@ -187,6 +189,7 @@ class Setting extends CI_Controller {
 		}
 
 		public function ajaxrestartmesin($id){
+			//not yet try
 			if ($id) {
 				// mengambil data mesin
 				$this->db->order_by('namamesin', 'ASC');
@@ -226,6 +229,7 @@ class Setting extends CI_Controller {
 		}
 
 		public function ajaxaddmesin(){
+			//success
 			$response['message']='failed';
 			$response['data']='Failed to add the machine';
 			if ($this->input->post('ip') !=='' && $this->input->post('nama') !=='') {

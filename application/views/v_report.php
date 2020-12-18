@@ -108,7 +108,7 @@
 										} else {
 											$inout="Masuk";
 									}?>
-										<tr id="<?= $row->no; ?>">
+										<tr id="<?= $row->no; ?>" class="reportstyle">
 											<td><?= $i++;?></td>
 											<td><?= $row->uid;?></td>
 											<td><?= $row->nama;?></td>

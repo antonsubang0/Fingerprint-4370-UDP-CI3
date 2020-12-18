@@ -482,6 +482,7 @@ class Home extends CI_Controller {
 
 	public function ajaxalldata()
 	{
+		//success
 		$this->db->select('*');
 		$this->db->from('user');
 		$this->db->join('bagian', 'bagian.id = user.bagian');
@@ -512,6 +513,7 @@ class Home extends CI_Controller {
 
 	public function ajaxsingleuser($id='')
 	{
+		//success
 		if ($id !=='') {
 			$this->db->join('bagian', 'bagian.id = user.bagian');
 			$query = $this->db->get_where('user', array('uid' => $id));
@@ -522,6 +524,7 @@ class Home extends CI_Controller {
 
 	public function ajaxsaveuser()
 	{
+		//sucess
 		$pdata['data'] = [$this->input->post(), $this->input->post()];
 
 		$this->db->set('nama', $this->input->post("nama"));
@@ -545,6 +548,7 @@ class Home extends CI_Controller {
 
 	}
 	public function ajaxdeleteuser (){
+		//success
 		$pdata = $this->input->post('uid');
 		$this->db->where('uid', $pdata);
 		$this->db->delete('user');
@@ -554,6 +558,7 @@ class Home extends CI_Controller {
 	}
 
 	public function ajaxsendregister($codemesin, $uid) {
+		//need try
 		$this->db->order_by('namamesin', 'ASC');
 		$query = $this->db->get('mesin');
 		$data['daftarmesin'] = $query->result();
@@ -584,18 +589,26 @@ class Home extends CI_Controller {
 		if ( $ret ){
 			$zk->disableDevice();
 			sleep(1);
-			$user = $zk->getUser();
-			if ($user) {
+			$useratt = $zk->getUser();
+			if ($useratt) {
 				$arraymax=array();
-				foreach ($user as $key => $value) {
+				$arrayuser=array();
+				foreach ($useratt as $key => $value) {
 					array_push($arraymax, $value[3]);
+					$arrayuser[$value[0]]=$value[3];
 				}
-				$max=max($arraymax) + 1;
+				//jika uid sudah ada
+				$pas=$arrayuser[$user->uid];
+				if ($pas==null) {
+					$pass = max($arraymax) + 1;
+				} else {
+					$pass = $pas;
+				}
 			} else {
-				$max=1;
+				$pass=1;
 			}
-			if($zk->enrollUser($max)){
-				$zk->setUser((int)$max, $user->uid, $user->nama, '', (int)$user->role);
+			if($zk->setUser((int)$pass, $user->uid, $user->nama, '', (int)$user->role)){
+				$zk->enrollUser($pass);
 			}
 			$zk->enableDevice();
 			sleep(1);
@@ -610,6 +623,7 @@ class Home extends CI_Controller {
 	}
 
 	public function ajaxsendinfouser($codemesin, $uid) {
+		// success
 		$this->db->order_by('namamesin', 'ASC');
 		$query = $this->db->get('mesin');
 		$data['daftarmesin'] = $query->result();
@@ -634,11 +648,11 @@ class Home extends CI_Controller {
 		if ( $ret ){
 			$zk->disableDevice();
 			sleep(1);
-			$user = $zk->getUser();
-			if ($user) {
+			$useratt = $zk->getUser();
+			if ($useratt) {
 				$arraymax=array();
 				$arrayuser=array();
-				foreach ($user as $key => $value) {
+				foreach ($useratt as $key => $value) {
 					array_push($arraymax, $value[3]);
 					$arrayuser[$value[0]]=$value[3];
 				}
@@ -666,8 +680,7 @@ class Home extends CI_Controller {
 	}
 
 	public function ajaxtambahuser() {
-		//	belum selesai dan belum uji coba
-		// 	uid automatis perbagian (option //mesin tambahan//kode perusahaan//kode devisi ikut tabel//kode user max 100)
+		//	success
 		$this->db->order_by('pass', 'ASC');
 		$query = $this->db->get('user');
 		$last = $query->last_row();
@@ -693,6 +706,7 @@ class Home extends CI_Controller {
 
 	public function ajaxalldevisi()
 	{
+		//success
 		$this->db->order_by('bnama', 'ASC');
 		$query = $this->db->get('bagian');
 		$hasil = $query->result();
@@ -713,8 +727,9 @@ class Home extends CI_Controller {
 
 		echo json_encode($data);
 	}
-	public function ajaxdeletedevisi (){
-		if ($rdata != 99){
+	public function ajaxdeletedevisi(){
+		//success
+		if ($this->input->post('dbagian') !== 99){
 			$this->db->where('id', $this->input->post('dbagian'));
 			$this->db->delete('bagian');
 			$response['message']='success';
@@ -723,25 +738,34 @@ class Home extends CI_Controller {
 			$response['message']='failed';
 			$response['data'] = 'Position can not be delete.';
 		}
+
 		echo json_encode($response);
 	}
 
 	public function ajaxtambahdevisi()
 	{
+		//success
 		$pdata = $this->input->post('tbagian');
-		$data = array(
-				'id' =>"",
-				'bnama' => $pdata
-		);
-		if ($this->db->insert('bagian', $data)) {
-			$response['message']='success';
-			$response['data']='Position was added.';
-			echo json_encode($response);
+		if ($pdata !== '') {
+			$data = array(
+					'id' =>"",
+					'bnama' => $pdata
+			);
+			if ($this->db->insert('bagian', $data)) {
+				$response['message']='success';
+				$response['data']='Position was added.';
+			}
+		} else {
+			$response['message']='failed';
+			$response['data']='Nothing add.';
 		}
+
+		echo json_encode($response);
+		
 	}
 
 	public function ajaxdownloadabsen($id) {
-		// mengambil data mesin
+		// successs
 		if (!$id) {
 			$response['message']= 'failed';
 			$response['data'] = "Machine is not connect.";
@@ -832,51 +856,57 @@ class Home extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	public function ajaxtodownloaduser($id="1"){
-		$this->db->order_by('namamesin', 'ASC');
-		$query = $this->db->get('mesin');
-		$data['daftarmesin'] = $query->result();
-		foreach ($query->result() as $row){
-				$initmesin[$row->id]['nama'] = $row->namamesin;
-				$initmesin[$row->id]['ip'] = $row->ipmesin;
-		}
-		$ipmesin = $initmesin[$id]['ip'];
-		$namamesin = $initmesin[$id]['nama'];
-		include_once APPPATH."third_party/zklib/zklib.php";
-		$zk = new ZKLib("$ipmesin", 4370);
-		$ret = $zk->connect();
-		sleep(1);
-		if ( $ret ){
-			$zk->disableDevice();
+	public function ajaxtodownloaduser($id){
+		//not try yet
+		if ($id) {
+			$this->db->order_by('namamesin', 'ASC');
+			$query = $this->db->get('mesin');
+			$data['daftarmesin'] = $query->result();
+			foreach ($query->result() as $row){
+					$initmesin[$row->id]['nama'] = $row->namamesin;
+					$initmesin[$row->id]['ip'] = $row->ipmesin;
+			}
+			$ipmesin = $initmesin[$id]['ip'];
+			$namamesin = $initmesin[$id]['nama'];
+			include_once APPPATH."third_party/zklib/zklib.php";
+			$zk = new ZKLib("$ipmesin", 4370);
+			$ret = $zk->connect();
 			sleep(1);
-			$user = $zk->getUser();
-			$zk->enableDevice();
-			sleep(1);
-			$zk->disconnect();
-			if ($user) {
-				foreach ($user as $key => $userdata) {
-					$query = $this->db->get_where('user', array('uid' => $userdata[0]));
-					if ($query->row()==NULL){
-						$data = array(
-						'id' => NULL,
-						'uid' => $userdata[0],
-						'nama' => $userdata[1],
-						'role' => $userdata[4],
-						'pass' => $userdata[3],
-						'bagian' => 99
-						);
-						$this->db->insert('user', $data);
+			if ( $ret ){
+				$zk->disableDevice();
+				sleep(1);
+				$user = $zk->getUser();
+				$zk->enableDevice();
+				sleep(1);
+				$zk->disconnect();
+				if ($user) {
+					foreach ($user as $key => $userdata) {
+						$query = $this->db->get_where('user', array('uid' => $userdata[0]));
+						if ($query->row()==NULL){
+							$data = array(
+							'id' => NULL,
+							'uid' => $userdata[0],
+							'nama' => $userdata[1],
+							'role' => $userdata[4],
+							'pass' => $userdata[3],
+							'bagian' => 99
+							);
+							$this->db->insert('user', $data);
+						}
 					}
+					$response['message'] = 'success';
+					$response['data'] = "Success Download Att. Machine $namamesin to Database.";
+				} else {
+					$response['message'] = 'failed';
+					$response['data'] = "No User From Att. Machine $namamesin.";
 				}
-				$response['message'] = 'success';
-				$response['data'] = "Success Download Att. Machine $namamesin to Database.";
 			} else {
 				$response['message'] = 'failed';
-				$response['data'] = "No User From Att. Machine $namamesin.";
-			}
+				$response['data'] = "Machine $namamesin is not connection.";
+			}	
 		} else {
 			$response['message'] = 'failed';
-			$response['data'] = "Machine $namamesin is not connection.";
+			$response['data'] = "Error.";
 		}
 		echo json_encode($response);
 	}

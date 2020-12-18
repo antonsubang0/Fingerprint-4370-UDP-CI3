@@ -235,6 +235,7 @@ class Report extends CI_Controller {
 
 		public function ajaxubahstatus()
 		{
+			//success
 			$response['message']='failed';
 			$response['data']= 'Data was not changed.';
 			if ($this->input->post('no')) {
@@ -250,6 +251,7 @@ class Report extends CI_Controller {
 
 		public function ajaxdeleteabsensi()
 		{
+			//success
 			$response['message']='failed';
 			$response['data']= 'Data was not deleted.';
 			if ($this->input->post('no')) {
@@ -264,6 +266,7 @@ class Report extends CI_Controller {
 
 		public function ajaxaddabsensi()
 		{
+			//success
 			if ($this->input->post('uid') !== '' && $this->input->post('inout') !== '' && $this->input->post('time') !== '') {
 				$data = array(
 					'no' => '',

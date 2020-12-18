@@ -5,8 +5,31 @@ date_default_timezone_set('Asia/Kolkata');
  
 class Login extends CI_Controller {
 
-		
 	public function index() {
+		if ($this->session->userdata('username')) {
+			$username = $this->session->userdata('username');
+			$this->db->where('username', $username);
+			$query = $this->db->get('useradmin');
+			$result = $query->row_array();
+			if( $result['rule'] !== $role ){
+				if ($result['rule']=='absen'){
+					redirect(base_url());
+				}
+				if ($result['rule']=='suratjalan'){
+					redirect(base_url('suratjalan'));
+				}
+				if ($result['rule']=='warehouse'){
+					redirect(base_url('warehouse'));
+				}
+			}
+			if ($ci->input->ip_address() !== $result['ip']) {		
+			redirect(base_url('login/logout'));
+			} else {
+				$ci->db->set('time', time());
+				$ci->db->where('username', $username);
+				$ci->db->update('useradmin');
+			}
+		}
 		$script['jstable']=0;
 		$this->load->view('v_login', $script);
 	}
