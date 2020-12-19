@@ -551,7 +551,10 @@ class Home extends CI_Controller {
 		//success
 		$pdata = $this->input->post('uid');
 		$this->db->where('uid', $pdata);
-		$this->db->delete('user');
+		if ($this->db->delete('user')) {
+			$this->db->where('uid', $pdata);
+			$this->db->delete('templatefinger');
+		}
 		$response['message'] = 'success';
 		$response['data'] = 'User berhasil dihapus';
 		echo json_encode($response);
@@ -876,22 +879,34 @@ class Home extends CI_Controller {
 				$zk->disableDevice();
 				sleep(1);
 				$user = $zk->getUser();
-				$zk->enableDevice();
-				sleep(1);
-				$zk->disconnect();
 				if ($user) {
 					foreach ($user as $key => $userdata) {
 						$query = $this->db->get_where('user', array('uid' => $userdata[0]));
 						if ($query->row()==NULL){
 							$data = array(
-							'id' => NULL,
-							'uid' => $userdata[0],
-							'nama' => $userdata[1],
-							'role' => $userdata[4],
-							'pass' => $userdata[3],
-							'bagian' => 99
-							);
+								'id' => NULL,
+								'uid' => $userdata[0],
+								'nama' => $userdata[1],
+								'role' => $userdata[4],
+								'pass' => $userdata[3],
+								'bagian' => 99
+								);
 							$this->db->insert('user', $data);
+							$template = $zk->getUserTemplateAll($userdata[3]);
+							foreach ($template as $ke => $val) {
+								if ($val) {
+									$data2 = array(
+										'no' => NULL,
+										'uid' => $userdata[0],
+										'finger'=> $val[2],
+										'size' => $val[0],
+										'valid' => $val[3],
+										'template' => $val[4]
+									);
+									$this->db->insert('templatefinger', $data2);
+								}
+							}
+							sleep(1);
 						}
 					}
 					$response['message'] = 'success';
@@ -900,6 +915,9 @@ class Home extends CI_Controller {
 					$response['message'] = 'failed';
 					$response['data'] = "No User From Att. Machine $namamesin.";
 				}
+				$zk->enableDevice();
+				sleep(1);
+				$zk->disconnect();
 			} else {
 				$response['message'] = 'failed';
 				$response['data'] = "Machine $namamesin is not connection.";

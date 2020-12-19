@@ -527,6 +527,7 @@ $(document).ready(function() {
         event.preventDefault();
         /* Act on the event */
         var mesin = $(this).data('mesin');
+        $('.loading-cs').show();
         $.ajax({
             url: 'setting/ajaxrestartmesin/' + mesin,
             type: 'get',

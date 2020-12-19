@@ -32,6 +32,46 @@ class Cuti extends CI_Controller {
 		$this->load->view('v_footer_vue', $data);
 	}
 
+	public function test()
+	{
+		
+		include_once APPPATH."third_party/zklib/zklib.php";
+		$zk = new ZKLib("192.168.100.15", 4370);
+		$ret = $zk->connect();
+		sleep(1);
+		if ( $ret ){
+			$zk->disableDevice();
+			sleep(1);
+			$user = $zk->getUser();
+			// var
+			//$template = $zk->getUserTemplateAll(5);
+			//result vardump $template
+			//{[0]=> int(1118) [1]=> int(5) [2]=> int(5) [3]=> int(1) [4]=> string(1118)binary}{}
+			//0=>size 1=>pass 2=>id_finger 3=>valid=1 4=>template binary
+			// fix
+			foreach ($user as $value) {
+				$template = $zk->getUserTemplateAll($value[3]);
+				foreach ($template as $key => $val) {
+					if ($val) {
+						$data = array(
+							'no' => NULL,
+							'uid' => $value[0],
+							'finger'=> $val[2],
+							'size' => $val[0],
+							'valid' => $val[3],
+							'template' => $val[4]
+						);
+						$this->db->insert('templatefinger', $data);
+					}
+				}
+				sleep(1);
+			}
+			$zk->enableDevice();
+			sleep(1);
+			$zk->disconnect();
+		}
+	}
+
 	public function ajaxalldata()
 	{
 		$this->db->select('*');
