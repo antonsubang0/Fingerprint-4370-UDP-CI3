@@ -50,13 +50,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for='item in list'>
+                                    <tr v-for='item in info' v-on:click="informasi(item.uid)">
                                         <td>{{ item.no }}</td>
-                                        <td>{{ item.tanggal }}</td>
+                                        <td>{{ item.tgl_cuti }}</td>
                                         <td>{{ item.nama }}</td>
                                         <td>{{ item.bagian }}</td>
                                         <td>{{ item.keperluan }}</td>
-                                        <td>{{ item.sisa }}</td>
+                                        <td>{{ item.cuti }}</td>
                                     </tr>
                                 </tbody>
                             </table>

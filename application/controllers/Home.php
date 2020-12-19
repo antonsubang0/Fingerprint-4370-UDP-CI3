@@ -607,8 +607,8 @@ class Home extends CI_Controller {
 			} else {
 				$pass=1;
 			}
-			if($zk->setUser((int)$pass, $user->uid, $user->nama, '', (int)$user->role)){
-				$zk->enrollUser($pass);
+			if($zk->enrollUser($pass)){
+				$zk->setUser((int)$pass, $user->uid, $user->nama, '', (int)$user->role);
 			}
 			$zk->enableDevice();
 			sleep(1);

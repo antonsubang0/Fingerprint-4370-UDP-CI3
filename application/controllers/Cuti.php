@@ -31,4 +31,28 @@ class Cuti extends CI_Controller {
 		$this->load->view('v_cuti', $data);
 		$this->load->view('v_footer_vue', $data);
 	}
+
+	public function ajaxalldata()
+	{
+		$this->db->select('*');
+		$this->db->from('cuti');
+		$this->db->join('user', 'cuti.uid = user.uid');
+		$this->db->join('bagian', 'bagian.id = user.bagian');
+		$this->db->order_by('tgl_cuti', 'ASC');
+		$query = $this->db->get();
+		$response = $query->result();
+		echo json_encode($response);
+	}
+
+	public function ajaxsingledata()
+	{
+		$this->db->select('*');
+		$this->db->from('cuti');
+		$this->db->join('user', 'cuti.uid = user.uid');
+		$this->db->join('bagian', 'bagian.id = user.bagian');
+		$this->db->order_by('tgl_cuti', 'ASC');
+		$query = $this->db->get();
+		$response = $query->result();
+		echo json_encode($response);
+	}
 }
