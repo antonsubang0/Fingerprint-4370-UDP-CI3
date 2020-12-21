@@ -14,7 +14,7 @@ class Cuti extends CI_Controller {
 		
     public function index()
 	{
-			$this->db->order_by('namamesin', 'ASC');
+		$this->db->order_by('namamesin', 'ASC');
 		$query = $this->db->get('mesin');
 		$data['daftarmesin'] = $query->result();
 		$data['jstable']=0;
@@ -71,6 +71,37 @@ class Cuti extends CI_Controller {
 			$zk->disconnect();
 		}
 	}
+	public function test1()
+	{
+		$query = $this->db->get_where('templatefinger', array('uid' => '180103'));
+		$resulttemplates = $query->result();
+		if ($resulttemplates) {
+			foreach ($resulttemplates as $ke => $resulttemplate) {
+				$template=[
+					(int)$resulttemplate->size, //size
+					(int)$ke, //pass
+					(int)$resulttemplate->finger, //id_finger
+					(int)$resulttemplate->valid, //valid
+					$resulttemplate->template //template
+				];
+				var_dump($template);
+				//$zk->setUserTemplate($template);
+			}
+		}
+	}
+
+	public function ajaxresetcuti()
+	{
+		$this->db->select('*');
+		$this->db->from('user');
+		$query = $this->db->get();
+		$result = $query->result();
+		foreach ($result as $key => $a) {
+			$this->db->set('sisa_cuti', 12);
+			$this->db->where('uid', $a->uid);
+			$this->db->update('hakcuti');
+		}
+	}
 
 	public function ajaxalldata()
 	{
@@ -78,21 +109,82 @@ class Cuti extends CI_Controller {
 		$this->db->from('cuti');
 		$this->db->join('user', 'cuti.uid = user.uid');
 		$this->db->join('bagian', 'bagian.id = user.bagian');
-		$this->db->order_by('tgl_cuti', 'ASC');
+		$this->db->order_by('tgl_cuti', 'DESC');
+		$this->db->limit(150);
 		$query = $this->db->get();
 		$response = $query->result();
 		echo json_encode($response);
 	}
 
-	public function ajaxsingledata()
+	public function ajaxinfodetail($uid)
 	{
 		$this->db->select('*');
-		$this->db->from('cuti');
-		$this->db->join('user', 'cuti.uid = user.uid');
+		$this->db->from('user');
 		$this->db->join('bagian', 'bagian.id = user.bagian');
-		$this->db->order_by('tgl_cuti', 'ASC');
+		$this->db->join('hakcuti', 'hakcuti.uid = user.uid');
+		$this->db->where('user.uid', $uid);
 		$query = $this->db->get();
 		$response = $query->result();
+		echo json_encode($response);
+	}
+
+	public function ajaxsearchcuti($id=null)
+	{
+		if ($id) {
+			$this->db->select('*');
+			$this->db->from('cuti');
+			$this->db->join('user', 'cuti.uid = user.uid');
+			$this->db->join('bagian', 'bagian.id = user.bagian');
+			$this->db->like('user.nama', $id, 'both');
+			$this->db->or_like('bagian.bnama', $id, 'both');
+			$this->db->order_by('tgl_cuti', 'DESC');
+			$query = $this->db->get();
+			$response = $query->result();
+		} else {
+			$this->db->select('*');
+			$this->db->from('cuti');
+			$this->db->join('user', 'cuti.uid = user.uid');
+			$this->db->join('bagian', 'bagian.id = user.bagian');
+			$this->db->order_by('tgl_cuti', 'DESC');
+			$this->db->limit(150);
+			$query = $this->db->get();
+			$response = $query->result();
+		}
+		echo json_encode($response);
+	}
+	public function ajaxdeletecuti($id)
+	{
+		if ($id) {
+			$this->db->where('no', $id);
+			$this->db->delete('cuti');
+			$response='success';
+		}
+		echo json_encode($response);
+	}
+
+	public function ajaxalluser()
+	{
+		$this->db->select('*');
+		$this->db->from('user');
+		$this->db->join('bagian', 'bagian.id = user.bagian');
+		$this->db->order_by('bnama', 'ASC');
+		$this->db->order_by('nama', 'ASC');
+		$query = $this->db->get();
+		$response = $query->result();
+		echo json_encode($response);
+	}
+
+	public function ajaxtambahcuti()
+	{
+		$data = json_decode(trim(file_get_contents('php://input')), true);
+		if ($data['uid']) {
+			if ($data['tgl_cuti']){
+				if ($data['keperluan']) {
+					$this->db->insert('cuti', $data);
+					$response= 'success';
+				}
+			}
+		}
 		echo json_encode($response);
 	}
 }

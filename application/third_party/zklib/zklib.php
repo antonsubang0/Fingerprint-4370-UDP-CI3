@@ -196,6 +196,11 @@
         {
             return getUserTemplateAllx($this, $uid);
         }
+
+        public function setUserTemplate($data)
+        {
+            return setUserTemplatex($this, $data);
+        }
         
         public function getFP() {
             return zkgetfp($this);

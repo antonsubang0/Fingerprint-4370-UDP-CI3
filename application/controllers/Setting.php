@@ -145,6 +145,27 @@ class Setting extends CI_Controller {
 			echo "back to home....";
 		}
 
+		public function restore()
+		{
+			$data['jstable']=1;
+    		$data['jspicker']=0;
+    		$this->session->set_userdata('report', 0);
+			$this->db->order_by('namamesin', 'ASC');
+			$query = $this->db->get('mesin');
+			$data['daftarmesin'] = $query->result();
+			// status Machine
+			$data['statusMachine']=[];
+			$statusMachine = $data['daftarmesin'];
+			foreach ($statusMachine as $status) {
+				$hasilStatus = statusMachine($status->ipmesin);
+				$data['statusMachine'][$status->ipmesin]=$hasilStatus;
+			}
+			
+			$this->load->view('v_header', $data);
+			$this->load->view('v_restore', $data);
+			$this->load->view('v_footer', $data);
+		}
+
 		public function ajaxdaftarmesin() {
 			//success
 			$this->db->order_by('namamesin', 'ASC');
@@ -255,6 +276,97 @@ class Setting extends CI_Controller {
 			} else {
 				$response['message']='failed';
 				$response['data']='Failed add machine.';
+			}
+			echo json_encode($response);
+		}
+
+		public function ajaxlistrestore()
+		{
+			$this->db->order_by('namamesin', 'ASC');
+			$query = $this->db->get('mesin');
+			$data = $query->result();
+			$result = array();
+			$i=1;
+			foreach ($data as $key => $row) {
+				$idmesin = $row->id;
+				$statusmesin='';
+				// if(statusMachine($row->ipmesin) > 0) {
+				// 	$statusmesin = 'disabled';
+				// }
+				$d = [
+					'DT_RowId' => $row->id,
+					'no' => $i,
+					'namamesin' => $row->namamesin,
+					'retoremesin' => "<a class='btn btn-danger mb-1 btnretoremesin $statusmesin' data-mesin='$idmesin' href=''>Restore</a>"
+				];
+				array_push($result, $d);
+				$i++;
+			}
+			$response['message']='success';
+			$response['data']=$result;
+			echo json_encode($response);
+		}
+
+		public function ajaxrestorefinger()
+		{
+			//logika
+			$id = $this->input->post('mesin');
+			if ($id) {
+				$this->db->order_by('namamesin', 'ASC');
+				$query = $this->db->get('mesin');
+				$data['daftarmesin'] = $query->result();
+				foreach ($query->result() as $row){
+						$initmesin[$row->id]['nama'] = $row->namamesin;
+						$initmesin[$row->id]['ip'] = $row->ipmesin;
+				}
+				$ipmesin = $initmesin[$id]['ip'];
+				$namamesin = $initmesin[$id]['nama'];
+
+				$this->db->select('*');
+				$this->db->from('user');
+				$this->db->join('bagian', 'bagian.id = user.bagian');
+				$this->db->order_by('nama', 'ASC');
+				$this->db->order_by('bnama', 'ASC');
+				$query = $this->db->get();
+				$datausers = $query->result();
+
+				include_once APPPATH."third_party/zklib/zklib.php";
+				$zk = new ZKLib("$ipmesin", 4370);
+				$ret = $zk->connect();
+				sleep(1);
+				if ( $ret ){
+					$zk->disableDevice();
+					sleep(1);
+					$zk->clearUser();
+					sleep(1);
+					foreach ($datausers as $key => $datauser) {
+						$zk->setUser((int)$key, $datauser->uid, $datauser->nama, '', (int)$datauser->role);
+						$query = $this->db->get_where('templatefinger', array('uid' => $datauser->uid));
+						$resulttemplates = $query->result();
+						if ($resulttemplates) {
+							foreach ($resulttemplates as $ke => $resulttemplate) {
+								$template=[
+									(int)$resulttemplate->size, //size
+									(int)$key, //pass
+									(int)$resulttemplate->finger, //id_finger
+									(int)$resulttemplate->valid, //valid
+									$resulttemplate->template //template
+								];
+								$zk->setUserTemplate($template);
+							}
+						}
+						sleep(1);
+					}
+					$zk->enableDevice();
+					sleep(1);
+					$zk->disconnect();
+				} else {
+					$response['message'] = 'failed';
+					$response['data'] = "Machine $namamesin is not connection.";
+				}	
+			} else {
+				$response['message'] = 'failed';
+				$response['data'] = "Error.";
 			}
 			echo json_encode($response);
 		}

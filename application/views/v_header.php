@@ -7,13 +7,13 @@
     <link rel="icon" type="image/png" sizes="16x16" href="<?= base_url()?>/berkas/img/head.ico">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>/berkas/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>/berkas/css/mycss.css">
+    <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>berkas/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>berkas/css/mycss.css">
     <?php if ($jstable==1) : ?>
-      <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>/berkas/css/dataTables.bootstrap4.min.css">
+      <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>berkas/css/dataTables.bootstrap4.min.css">
     <?php endif;?>
     <?php if ($jspicker==1) : ?>
-      <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>/berkas/css/jquery.datetimepicker.min.css">
+      <link rel="stylesheet" type="text/css" href="<?= base_url(); ?>berkas/css/jquery.datetimepicker.min.css">
     <?php endif;?>
 
     <title>Absensi CPI Subang</title>
@@ -68,14 +68,14 @@
                                 <a href="<?= base_url(); ?>home/managementuser" class="text-body nav-ajs-cs">
                                     <svg width="1.5em" height="1.5em" viewBox="0 0 18 18" class="bi bi-person-lines-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                       <path fill-rule="evenodd" d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm7 1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm2 9a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
-                                    </svg><span class="ml-1 nav-a-cs">Management User</span>
+                                    </svg><span class="ml-1 nav-a-cs">Management Employer</span>
                                 </a>
                             </li>
                             <li class="py-2 pl-4 pl-md-5 border-bottom">
                                 <a href="<?= base_url(); ?>home/managementdevisi" class="text-body nav-ajs-cs">
                                     <svg width="1.5em" height="1.5em" viewBox="0 0 18 18" class="bi bi-people-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                       <path fill-rule="evenodd" d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
-                                    </svg><span class="ml-1 nav-a-cs">Management Devisi</span>
+                                    </svg><span class="ml-1 nav-a-cs">Management Position</span>
                                 </a>
                             </li>
                         </ul>
@@ -147,5 +147,11 @@
                             </li>
                         </ul>
                     </div>
+                    <li class="py-2 pl-3 border-bottom">
+                        <a href="<?= base_url(); ?>cuti" class="text-cendol">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="currentColor" class="bi bi-file-earmark-post" viewBox="0 0 18 18"><path d="M4 0h5.5v1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h1V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z"/><path d="M9.5 3V0L14 4.5h-3A1.5 1.5 0 0 1 9.5 3zM4 6.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-7z"/><path fill-rule="evenodd" d="M4 3.5a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H4.5a.5.5 0 0 1-.5-.5z"/>
+                            </svg><span class="ml-1 nav-a-cs">Additional ( Cuti )</span>
+                        </a>
+                    </li>
                 </ul>
             </div>

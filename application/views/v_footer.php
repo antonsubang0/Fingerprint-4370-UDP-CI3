@@ -60,6 +60,19 @@
                     { "data": "delete" }
                 ]
             });
+            var tabelrestore = $('#tabelrestore').DataTable({
+                responsive: true,
+                pageLength: 10,
+                ajax : 'ajaxlistrestore',
+                createdRow : function( row, data, dataIndex ) {
+                    $(row).addClass('managementrestore');
+                },
+                columns : [
+                    { "data": "no" },
+                    { "data": "namamesin" },
+                    { "data": "retoremesin" }
+                ]
+            });
         </script>
     <?php endif;?>
     <?php if ($jspicker==1) : ?>

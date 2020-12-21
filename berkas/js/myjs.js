@@ -595,4 +595,32 @@ $(document).ready(function() {
             notiffailed('Error');
         });
     });
+    $('body').on('click', '.btnretoremesin', function(event) {
+        event.preventDefault();
+        /* Act on the event */
+        var mesin = $(this).data('mesin');
+        $('#modalrestore').modal('show');
+        $('.yesrestoremachine').on('click', function(event) {
+            event.preventDefault();
+            /* Act on the event */
+            $('#modalrestore').modal('hide');
+            $('.loading-cs').show();
+            $.ajax({
+                url: 'ajaxrestorefinger',
+                type: 'post',
+                dataType: 'json',
+                data: { mesin : mesin },
+            })
+            .done(function(response) {
+                if (response.message=='success') {
+                    notifsuccess(response.data);
+                } else {
+                    notiffailed(response.data);
+                }
+            })
+            .fail(function() {
+                notiffailed('Error');
+            });
+        });
+    });
 });

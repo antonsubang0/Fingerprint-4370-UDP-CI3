@@ -78,4 +78,28 @@
         return $template;
     }
 
+    function setUserTemplatex($self, $data)
+    {
+        $command = CMD_USERTEMP_WRQ;
+        $command_string = $data;
+        // $length = ord(substr($command_string, 0, 1)) + ord(substr($command_string, 1, 1)) * 256;
+        $chksum = 0; //x
+        $session_id = $self->session_id; //xx
+        $u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6/H2h7/H2h8', substr($self->data_recv, 0, 8)); //x
+        $reply_id = hexdec($u['h8'] . $u['h7']); //x
+        $buf = $self->createHeader($command, $chksum, $session_id, $reply_id, $command_string);//x
+        socket_sendto($self->zkclient, $buf, strlen($buf), MSG_EOR, $self->ip, $self->port);//tinggal msg_eor
+        try {
+            @socket_recvfrom($self->zkclient, $self->data_recv, 1024, 0, $self->ip, $self->port);//x
+            $u = unpack('H2h1/H2h2/H2h3/H2h4/H2h5/H2h6', substr($self->data_recv, 0, 8));
+            //x
+            $self->session_id =  hexdec($u['h6'] . $u['h5']); //x
+            return substr($self->data_recv, 8 ); //xx
+        } catch (ErrorException $e) {
+            return false;
+        } catch (exception $e) {
+            return false;
+        }
+    }
+
 ?>
