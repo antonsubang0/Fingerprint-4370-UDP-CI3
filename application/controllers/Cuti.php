@@ -5,12 +5,12 @@ date_default_timezone_set('Asia/Kolkata');
  
 class Cuti extends CI_Controller {
 	
-		// public function __construct() 
-		// {
-		// 	parent::__construct();
-		// 	$role = 'absen';
-		// 	isLogged($role);
-		// }
+		public function __construct() 
+		{
+			parent::__construct();
+			$role = 'absen';
+			isLogged($role);
+		}
 		
     public function index()
 	{
@@ -73,20 +73,40 @@ class Cuti extends CI_Controller {
 	}
 	public function test1()
 	{
-		$query = $this->db->get_where('templatefinger', array('uid' => '180103'));
-		$resulttemplates = $query->result();
-		if ($resulttemplates) {
-			foreach ($resulttemplates as $ke => $resulttemplate) {
-				$template=[
-					(int)$resulttemplate->size, //size
-					(int)$ke, //pass
-					(int)$resulttemplate->finger, //id_finger
-					(int)$resulttemplate->valid, //valid
-					$resulttemplate->template //template
-				];
-				var_dump($template);
-				//$zk->setUserTemplate($template);
+		$response = 'success';
+		include_once APPPATH."third_party/zklib/zklib.php";
+		$zk = new ZKLib("192.168.100.15", 4370);
+		$ret = $zk->connect();
+		sleep(1);
+		if ( $ret ){
+			$zk->disableDevice();
+			sleep(1);
+			$zk->setUser(2, '180006', 'Antonius', '', 14);
+			sleep(1);
+			$query = $this->db->get_where('templatefinger', array('uid' => '180006'));
+			$resulttemplates = $query->result();
+			if ($resulttemplates) {
+				foreach ($resulttemplates as $ke => $resulttemplate) {
+					$template=[
+						$resulttemplate->size, //size
+						2, //pass
+						$resulttemplate->finger, //id_finger
+						$resulttemplate->valid, //valid
+						$resulttemplate->template //template
+					];
+					// var_dump($template); die();
+					var_dump($zk->setUserTemplate($resulttemplate->template)); die();
+					// if ($zk->setUserTemplate($resulttemplate->template)) {
+					// 	$response = 'success';
+					// }
+				}
 			}
+			sleep(1);
+			$zk->enableDevice();
+			sleep(1);
+			$zk->disconnect();
+
+			echo json_encode($response);
 		}
 	}
 
@@ -110,7 +130,7 @@ class Cuti extends CI_Controller {
 		$this->db->join('user', 'cuti.uid = user.uid');
 		$this->db->join('bagian', 'bagian.id = user.bagian');
 		$this->db->order_by('tgl_cuti', 'DESC');
-		$this->db->limit(150);
+		$this->db->limit(500);
 		$query = $this->db->get();
 		$response = $query->result();
 		echo json_encode($response);

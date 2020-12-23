@@ -282,6 +282,7 @@ class Setting extends CI_Controller {
 
 		public function ajaxlistrestore()
 		{
+			//not success
 			$this->db->order_by('namamesin', 'ASC');
 			$query = $this->db->get('mesin');
 			$data = $query->result();
@@ -309,7 +310,7 @@ class Setting extends CI_Controller {
 
 		public function ajaxrestorefinger()
 		{
-			//logika
+			//logika not success
 			$id = $this->input->post('mesin');
 			if ($id) {
 				$this->db->order_by('namamesin', 'ASC');
@@ -337,10 +338,12 @@ class Setting extends CI_Controller {
 				if ( $ret ){
 					$zk->disableDevice();
 					sleep(1);
+					$zk->clearAdmin();
+					sleep(1);
 					$zk->clearUser();
 					sleep(1);
 					foreach ($datausers as $key => $datauser) {
-						$zk->setUser((int)$key, $datauser->uid, $datauser->nama, '', (int)$datauser->role);
+						$zk->setUser((int)$key + 1, $datauser->uid, $datauser->nama, '', (int)$datauser->role);
 						$query = $this->db->get_where('templatefinger', array('uid' => $datauser->uid));
 						$resulttemplates = $query->result();
 						if ($resulttemplates) {
@@ -360,6 +363,8 @@ class Setting extends CI_Controller {
 					$zk->enableDevice();
 					sleep(1);
 					$zk->disconnect();
+					$response['message'] = 'success';
+					$response['data'] = "Restore Fingerprint successfully.";
 				} else {
 					$response['message'] = 'failed';
 					$response['data'] = "Machine $namamesin is not connection.";

@@ -101,7 +101,7 @@ $(document).ready(function() {
                     type: 'post',
                     dataType: 'json',
                     data: {
-                        uid : uid,
+                        uid : $('#cuid').val(),
                         nama : $('#cuser').val(),
                         role : $('#crole').val(),
                         bagian : $('#cdevisi').val()
@@ -118,6 +118,10 @@ $(document).ready(function() {
                             role= 'Admin';
                         };
                         notifsuccess('Data user was changed.');
+                        $('#cuid').val('');
+                        $('#cuser').val('');
+                        $('#crole').val('');
+                        $('#cdevisi').val('');
                         htmluid.html(respon1.data.uid);
                         htmlnama.html(respon1.data.nama);
                         htmlrole.html(role);
@@ -194,6 +198,7 @@ $(document).ready(function() {
                 .done(function(respon2) {
                     if (respon2.message=='success') {
                         notifsuccess(respon2.data);
+                        console.log('info');
                     } else {
                         notiffailed(respon2.data);
                     }

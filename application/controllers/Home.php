@@ -588,10 +588,8 @@ class Home extends CI_Controller {
 		include_once APPPATH."third_party/zklib/zklib.php";
 		$zk = new ZKLib($ipmesin, 4370);
 		$ret = $zk->connect();
-		sleep(1);
 		if ( $ret ){
 			$zk->disableDevice();
-			sleep(1);
 			$useratt = $zk->getUser();
 			if ($useratt) {
 				$arraymax=array();
@@ -610,11 +608,9 @@ class Home extends CI_Controller {
 			} else {
 				$pass=1;
 			}
-			if($zk->enrollUser($pass)){
-				$zk->setUser((int)$pass, $user->uid, $user->nama, '', (int)$user->role);
-			}
+			$zk->setUser((int)$pass, $user->uid, $user->nama, '', (int)$user->role);
+			$zk->enrollUser($user->uid);
 			$zk->enableDevice();
-			sleep(1);
 			$zk->disconnect();
 			$data['message']='success';
 			$data['data']= 'Go to Machine and Register';
@@ -626,7 +622,7 @@ class Home extends CI_Controller {
 	}
 
 	public function ajaxsendinfouser($codemesin, $uid) {
-		// success
+		// need try
 		$this->db->order_by('namamesin', 'ASC');
 		$query = $this->db->get('mesin');
 		$data['daftarmesin'] = $query->result();
@@ -647,10 +643,8 @@ class Home extends CI_Controller {
 		include_once APPPATH."third_party/zklib/zklib.php";
 		$zk = new ZKLib($ipmesin, 4370);
 		$ret = $zk->connect();
-		sleep(1);
 		if ( $ret ){
 			$zk->disableDevice();
-			sleep(1);
 			$useratt = $zk->getUser();
 			if ($useratt) {
 				$arraymax=array();
@@ -669,9 +663,7 @@ class Home extends CI_Controller {
 				$pass=1;
 			}
 			$zk->setUser((int)$pass, $user->uid, $user->nama, '', (int)$user->role);
-			sleep(1);
 			$zk->enableDevice();
-			sleep(1);
 			$zk->disconnect();
 			$data['message']='success';
 			$data['data']= 'Sent Info User';

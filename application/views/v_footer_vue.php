@@ -16,7 +16,13 @@
       		userinfo : null,
       		userselect : null,
       		datakeperluan : null,
-      		datatglcuti : null
+      		datatglcuti : null,
+      		jumlahdata : null,
+      		jumlahpage : null,
+      		perpage : 8,
+      		page : [],
+      		statepage :1,
+      		datafull : null,
     		}
   		},
 	  mounted () {
@@ -26,16 +32,24 @@
 	  	reload : function () {
 	  		axios.get('<?= base_url(); ?>cuti/ajaxalldata')
 	      .then(response => {
-	        this.info = response.data;
-	        console.log(this.info);
+	      	this.page = [];
+	      	this.statepage = 1;
+	      	this.datafull = response.data;  
+	        this.jumlahdata = response.data.length;
+	        this.jumlahpage = Math.ceil(this.jumlahdata / this.perpage);
+	        for (var i = 1; i <= this.jumlahpage ; i++) {
+	        	this.page.push(i);
+	        }
+	        this.info = this.datafull.slice((this.statepage - 1) * this.perpage, (this.statepage - 1) * this.perpage + this.perpage);
 	      })
 	      .catch(error => {
 	        console.log(error);
 	      })
 	      .finally(() => this.loading = false);
 	  	},
-	  	tambah : function () {
-	  		console.log('asik');
+	  	paginate : function (e) {
+	  		this.statepage = e;
+	  		this.info = this.datafull.slice((this.statepage - 1) * this.perpage, (this.statepage - 1) * this.perpage + this.perpage);
 	  	},
 	  	deletex : function (e) {
 	  		axios.get('<?= base_url(); ?>cuti/ajaxdeletecuti/' + e)
@@ -102,7 +116,27 @@
 	  	vuesearch : function () {
 	  		axios.get('<?= base_url(); ?>cuti/ajaxsearchcuti/' + this.search)
 	      .then(response => {
-	        this.info = response.data;
+	      	if (response.data) {
+	      		this.page = [];
+	      		this.statepage = 1;
+		      	this.datafull = response.data;  
+		        this.jumlahdata = response.data.length;
+		        this.jumlahpage = Math.ceil(this.jumlahdata / this.perpage);
+		        for (var i = 1; i <= this.jumlahpage ; i++) {
+		        	this.page.push(i);
+		        }
+		        this.info = this.datafull.slice((this.statepage - 1) * this.perpage, (this.statepage - 1) * this.perpage + this.perpage);
+	      	} else {
+	      		this.statepage = 1;
+		        this.info = [{
+		        	tgl_cuti : 'not found',
+		        	nama : 'not found',
+		        	bnama : 'not found',
+		        	keperluan : 'not found',
+		        	cuti : 'not found',
+		        	no : 'not found'
+		        }];
+	      	}
 	      })
 	      .catch(error => {
 	        console.log(error);

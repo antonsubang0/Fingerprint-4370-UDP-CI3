@@ -12,9 +12,18 @@ tr.reportstyle:hover {
     color: rgba(0,0,255,0.7)!important;
 }
 
+.vuepagination-cs:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
 .cutipointer {
     cursor: pointer;
     text-decoration: underline;
+}
+
+.cutipointer:hover {
+    color: rgba(0,0,255,0.7);
 }
 
 .delcuticss:hover {

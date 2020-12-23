@@ -45,6 +45,13 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <div class="row">
+                              <div class="col overflow-x">
+                                <ul class="pagination">
+                                  <li class="page-item" v-bind:class="{ active: statepage==pag }" v-for='pag in page'><a class="page-link vuepagination-cs" v-on:click='paginate(pag)'>{{ pag }}</a></li>
+                                </ul>
+                              </div>    
+                            </div>
                         </div>
                     </div>
                 </div>
