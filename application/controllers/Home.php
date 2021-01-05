@@ -554,6 +554,8 @@ class Home extends CI_Controller {
 		if ($this->db->delete('user')) {
 			$this->db->where('uid', $pdata);
 			$this->db->delete('templatefinger');
+			$this->db->where('uid', $pdata);
+			$this->db->delete('hakcuti');
 		}
 		$response['message'] = 'success';
 		$response['data'] = 'User berhasil dihapus';
