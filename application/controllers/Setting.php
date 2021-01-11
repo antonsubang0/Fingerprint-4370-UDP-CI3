@@ -10,6 +10,7 @@ class Setting extends CI_Controller {
 			parent::__construct();
 			$role = 'absen';
 			isLogged($role);
+			$this->session->unset_userdata('cutiprint');
 		}
 		
     	public function index() {

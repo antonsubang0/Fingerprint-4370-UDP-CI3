@@ -4,7 +4,15 @@
                     <div class="row mb-3 position-relative">
                         <div class="col-md-10 col-8">
                             <h4 class="mb-0">Paid Leave</h4>
-                            <small>Paid Leave Employers</small>
+                            <small>Paid Leave of Employers</small>
+                        </div>
+                        <div class="col-md-2 col-4 text-right">
+                            <button type="button" class="btn btn-primary" v-on:click='vuebtnprint'>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+                                <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                                <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+                              </svg>
+                            </button>
                         </div>
                     </div>
                     <div class="row">
@@ -25,10 +33,10 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Tanggal</th>
+                                        <th>Date</th>
                                         <th>Name</th>
                                         <th>Position</th>
-                                        <th>Needed</th>
+                                        <th>Information</th>
                                         <th>Paid Leave</th>
                                         <th>Delete</th>
                                     </tr>
@@ -41,7 +49,18 @@
                                         <td>{{ item.bnama }}</td>
                                         <td>{{ item.keperluan }}</td>
                                         <td>{{ item.cuti }}</td>
-                                        <td v-on:click="deletex(item.no)"><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='currentColor' class='bi bi-trash text-danger delcuticss' viewBox='0 0 16 16'><path d='M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z'/><path fill-rule='evenodd' d='M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z'/></svg></td>
+                                        <td>
+                                          <div v-if="item.enable" v-on:click="deletex(item.no)">
+                                            <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='currentColor' class='bi bi-trash text-danger delcuticss' viewBox='0 0 16 16'><path d='M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z'/><path fill-rule='evenodd' d='M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z'/></svg>
+                                          </div>
+                                          <div v-else>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-slash" viewBox="0 0 16 16">
+                                            <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/>
+                                            <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299l.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/>
+                                            <path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884l-12-12 .708-.708 12 12-.708.708z"/>
+                                          </svg>
+                                          </div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -65,13 +84,19 @@
                   </div>
                   <div class="modal-body">
                       <div class="form-group">
+                        <label for="nama">Bagian</label>
+                        <select class="form-control" id="nama" v-model='bagianselect' v-on:change='bybagian'>
+                          <option v-for='bagian in bagianinfo' v-bind:value="bagian.id">{{ bagian.bnama }}</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
                         <label for="nama">Name</label>
                         <select class="form-control" id="nama" v-model='userselect'>
                           <option v-for='user in userinfo' v-bind:value="user.uid">{{ user.bnama }} - {{ user.nama }}</option>
                         </select>
                       </div>
                       <div class="form-group">
-                        <label for="keperluan1">Needed</label>
+                        <label for="keperluan1">Information</label>
                         <input type="text" class="form-control" id="keperluan1" v-model='datakeperluan'>
                       </div>
                       <div class="form-group">

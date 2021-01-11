@@ -10,6 +10,7 @@ class Home extends CI_Controller {
 		parent::__construct();
 		$role = 'absen';
 		isLogged($role);
+		$this->session->unset_userdata('cutiprint');
 	}
 	
 	public function index()
@@ -375,7 +376,7 @@ class Home extends CI_Controller {
 		if ( $ret ){
 			$zk->disableDevice();
 			sleep(1);
-			if($zk->enrollUser($user->pass)){
+			if($zk->enrollUser("$user->uid")){
 				$this->session->set_flashdata('status', 'Go to Machine and Register.');
 				$zk->setUser((int)$user->pass, $user->uid, $user->nama, '', (int)$user->role);
 			}
@@ -611,7 +612,7 @@ class Home extends CI_Controller {
 				$pass=1;
 			}
 			$zk->setUser((int)$pass, $user->uid, $user->nama, '', (int)$user->role);
-			$zk->enrollUser($user->uid);
+			$zk->enrollUser("$user->uid");
 			$zk->enableDevice();
 			$zk->disconnect();
 			$data['message']='success';
