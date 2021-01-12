@@ -200,7 +200,7 @@ class Sakit extends CI_Controller {
 		$data = $this->session->userdata('cutiprint');
 		$pdf = new FPDF('P','mm','A4');
 		// Column headings
-		$header = array('No', 'Date' , 'Name', 'Position', 'Reason', 'Info');
+		$header = array('No', 'Tanggal' , 'Nama', 'Bagian', 'Keterangan', 'Info');
 		// Data loading
 		$pdf->SetTitle('Ijin / Sakit Karyawan');
 		$pdf->SetAuthor('Antonius-Riyanto');
@@ -208,7 +208,7 @@ class Sakit extends CI_Controller {
 		$pdf->SetFont('Courier','B',16);
 		$pdf->AddPage();
 		$pdf->Image('berkas/img/cutilogo.png', 10, 5, 190, 277);
-		$pdf->Cell(190,5,'Ijin / Sakit Karyawan',0,1,'C');
+		$pdf->Cell(190,5,'Data Ijin / Sakit Karyawan',0,1,'C');
 		$pdf->Ln();
 		$pdf->SetFont('Courier','B',12);
 		$pdf->SetFillColor(255,0,0);
@@ -259,7 +259,7 @@ class Sakit extends CI_Controller {
 		include_once APPPATH."third_party/pdf/fpdf.php";
 		$pdf = new FPDF('P','mm','A4');
 		// Column headings
-		$header = array('No', 'Name', 'Position','Sisa Cuti', 'Sakit', 'Ijin');
+		$header = array('No', 'Nama', 'Position','Sisa Cuti', 'Sakit', 'Ijin');
 		// Data loading
 		$pdf->SetTitle('Ringklasan Ijin / Sakit Karyawan');
 		$pdf->SetAuthor('Antonius-Riyanto');

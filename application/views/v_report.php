@@ -163,12 +163,19 @@
 					</button>
 		  		</div>
 		  		<div class="modal-body">
+		  			<div class="form-group">
+						<label for="rbagian">Position</label>
+						<select id="rbagian" class="form-control" name="bagian">
+							<option value="">No Selected</option>
+						<?php foreach ($add as $row):?>
+							<option value="<?= $row->id;?>"><?= $row->bnama; ?></option>
+						<?php endforeach;?>
+						</select>
+			  		</div>
 			  		<div class="form-group">
 						<label for="ruser">User</label>
 						<select id="ruser" class="form-control" name="uid">
-						<?php foreach ($add as $row):?>
-							<option value="<?= $row->uid;?>"><?= $row->bnama . " - " . $row->nama ?></option>
-						<?php endforeach;?>
+							<option value="">No User</option>
 						</select>
 			  		</div>
 			  		<div class="form-group">

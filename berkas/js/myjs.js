@@ -20,6 +20,11 @@ $(document).ready(function() {
                 $('.loading-cs').hide();
             }, 3000);
         }
+        if ($('#download').is(":checked")){
+            setTimeout ( function () {
+                $('.loading-cs').hide();
+            }, 3000);
+        }
     });
 
     function notifsuccess(note) {
@@ -43,6 +48,29 @@ $(document).ready(function() {
             $('.notifikasi-cs').hide();
         }, 1000);
     }
+    $('body').on('change', '#rbagian', function(event) {
+        event.preventDefault();
+        /* Act on the event */
+        console.log($(this).val());
+        $.ajax({
+            url: 'report/ajaxuserbyposition/' + $(this).val(),
+            type: 'get',
+            dataType: 'json',
+        })
+        .done(function(response) {
+            console.log(response);
+            let html = '';
+            response.forEach(function (e) {
+                let temp = `<option value="`+ e.uid +`">` + e.bnama + ` - ` + e.nama + `</option>`;
+                html = html + temp;
+            })
+            $('#ruser').html(html);
+        })
+        .fail(function(e) {
+            console.log(e);
+            alert("error");
+        });    
+    });
     $('body').on('click', '.downloaduser', function(event) {
         event.preventDefault();
         /* Act on the event */
@@ -508,7 +536,7 @@ $(document).ready(function() {
                     response.data1.bnama,
                     tgl,
                     inout,
-                    "<b><svg class='text-danger deleteabsensi' xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor' class='bi bi-x' viewBox='0 0 16 16'><path fill-rule='evenodd' d='M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z'/></svg></b>"
+                    "<b><svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='currentColor' class='bi bi-trash text-danger deleteabsensi' viewBox='0 0 16 16'><path d='M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z'/><path fill-rule='evenodd' d='M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z'/></b>"
                 ]).draw( false ).node().id=response.data1.no;
                 num++;
             } else {

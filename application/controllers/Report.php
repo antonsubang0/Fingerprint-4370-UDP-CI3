@@ -31,8 +31,7 @@ class Report extends CI_Controller {
 			$query = $this->db->get('bagian');
 			$data['bagian'] = $query->result();
 			$this->db->select('*');
-			$this->db->from('user');
-			$this->db->join('bagian', 'bagian.id = user.bagian');
+			$this->db->from('bagian');
 			$this->db->order_by('bnama', 'ASC');
 			$query = $this->db->get();
 			$data['add'] = $query->result();
@@ -292,6 +291,28 @@ class Report extends CI_Controller {
 				$response['message']='failed';
 				$response['data']= 'Data can not add.';
 			}
+			echo json_encode($response);
+		}
+
+		public function ajaxuserbyposition($id = null)
+		{
+			if ($id) {
+				$this->db->select('*');
+				$this->db->from('user');
+				$this->db->join('bagian', 'bagian.id = user.bagian');
+				$this->db->where('bagian.id', $id);
+				$this->db->order_by('user.nama', 'ASC');
+				$query = $this->db->get();
+				$response = $query->result();
+			} else {
+				$this->db->select('*');
+				$this->db->from('user');
+				$this->db->join('bagian', 'bagian.id = user.bagian');
+				$this->db->order_by('user.nama', 'ASC');
+				$query = $this->db->get();
+				$response = $query->result();
+			}
+
 			echo json_encode($response);
 		}
 }

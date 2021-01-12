@@ -296,7 +296,7 @@ class Cuti extends CI_Controller {
 		$data = $this->session->userdata('cutiprint');
 		$pdf = new FPDF('P','mm','A4');
 		// Column headings
-		$header = array('No', 'Date' , 'Name', 'Position', 'Information', 'Cuti');
+		$header = array('No', 'Tanggal' , 'Nama', 'Position', 'Informasi', 'Cuti');
 		// Data loading
 		$pdf->SetTitle('Data Cuti Karyawan');
 		$pdf->SetAuthor('Antonius-Riyanto');
@@ -312,7 +312,7 @@ class Cuti extends CI_Controller {
 		$pdf->SetDrawColor(128,0,0);
 		$pdf->SetLineWidth(.3);
 		    // Header
-	    $w = array(12, 25, 45, 30, 65, 12);
+	    $w = array(12, 25, 45, 30, 62, 18);
 	    for($i=0;$i<count($header);$i++)
 	        $pdf->Cell($w[$i],7,$header[$i],1,0,'C',true);
 	    $pdf->Ln();
