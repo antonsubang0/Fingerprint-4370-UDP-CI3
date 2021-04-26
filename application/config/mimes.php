@@ -16,6 +16,7 @@ return array(
 	'bin'	=>	array('application/macbinary', 'application/mac-binary', 'application/octet-stream', 'application/x-binary', 'application/x-macbinary'),
 	'dms'	=>	'application/octet-stream',
 	'lha'	=>	'application/octet-stream',
+	'dat'	=>	'text/plain',
 	'lzh'	=>	'application/octet-stream',
 	'exe'	=>	array('application/octet-stream', 'application/x-msdownload'),
 	'class'	=>	'application/octet-stream',

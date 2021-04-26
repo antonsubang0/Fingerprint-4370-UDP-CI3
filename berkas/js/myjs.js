@@ -412,7 +412,7 @@ $(document).ready(function() {
                         warnatgl.addClass('text-danger');
                     }, 1500);
                 }
-                if (status==5) {
+                if (status==7) {
                     setTimeout(function () {
                         ini.removeClass('text-danger');
                         ini.removeClass('text-success');
@@ -656,4 +656,11 @@ $(document).ready(function() {
             });
         });
     });
+    $('body').on('change', '#validatedCustomFile', function () {
+        const a = $('#labeldat');
+        const src = this.value;
+        const partfilename = src.split('\\');
+        const filename = partfilename[partfilename.length-1];
+        a.text(filename);
+    })
 });
