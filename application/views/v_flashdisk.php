@@ -7,19 +7,21 @@
                             <small>File .dat from fingerprint machine.</small>
                         </div>
                     </div>
-                    <div class="row bg-light rounded-lg py-3 mx-1">
-                        <div class="col overflow-auto" style="height: 50vh;">
-                          <form method="post" action="<?= base_url(); ?>flashdisk/upload" enctype="multipart/form-data">
-                              <input name="data" type="file" class="custom-file-input" id="validatedCustomFile" required>
-                              <label class="custom-file-label" for="validatedCustomFile" id="labeldat">Choose file .dat...</label>
-                              <?php if ($this->session->flashdata('notifinputfd')) : ?>
-                                <div class="text-info"><?= $this->session->flashdata('notifinputfd'); ?></div>
-                              <?php endif; ?>
-                              <button type="submit" class="btn btn-primary mb-2 mt-2">Upload File</button>
+                    <div class="row bg-light rounded-lg py-3 mx-1 justify-content-center">
+                        <div class="col-md-6 overflow-auto text-center" style="height: 50vh;">
+                          <div class="custom-file mt-5 pb-5">
+                            <form method="post" action="<?= base_url(); ?>flashdisk/upload" enctype="multipart/form-data">
+                                <input name="data" type="file" class="custom-file-input" id="validatedCustomFile" required>
+                                <label class="custom-file-label" for="validatedCustomFile" id="labeldat">Choose file .dat...</label>
+                                <?php if ($this->session->flashdata('notifinputfd')) : ?>
+                                  <div class="text-info"><?= $this->session->flashdata('notifinputfd'); ?></div>
+                                <?php endif; ?>
+                                <button type="submit" class="btn btn-primary mb-2 mt-2">Upload File</button>
                             </form>
-                            <div class="mt-5 col">
-                              <h4 class="text-danger text-center">Please dont rename the file from fingerprint machine. On default, filename is 1_attlog.dat (the number is define nomor machine).</h4>
-                            </div>
+                          </div>
+                          <div class="mt-5 pt-3">
+                            <h6 class="text-danger text-center">Please, Dont the rename a file from fingerprint machine. Because on default, the number of the filename is define nomor machine. Example : 1_attlog.dat, 2_attlog.dat dan 3_attlog.dat.</h6>
+                          </div>
                           </div>
                         </div>
                     </div>

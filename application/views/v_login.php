@@ -75,6 +75,7 @@
                                             <h4 class="text-white" style="text-shadow: 2px 2px 5px #000000">Masuk</h4>
                                         </div>
                                     </div>
+                                    <input type="hidden" name="token" value="<?= $this->session->userdata('token'); ?>">
                                     <div class="row form-group">
                                         <div class="col">
                                             <input type="text" name="username" class="form-control border border-success" placeholder="Username" autocomplete="off">

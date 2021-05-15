@@ -1,14 +1,8 @@
 ###################
-What is CodeIgniter
+Fingerprint-4370-UDP-CI3
 ###################
 
-CodeIgniter is an Application Development Framework - a toolkit - for people
-who build web sites using PHP. Its goal is to enable you to develop projects
-much faster than you could if you were writing code from scratch, by providing
-a rich set of libraries for commonly needed tasks, as well as a simple
-interface and logical structure to access these libraries. CodeIgniter lets
-you creatively focus on your project by minimizing the amount of code needed
-for a given task.
+Fingerprint-4370-UDP-CI3 is an Application Fingerprint Machines. The Application base on the Codeigniter and library used to the connection on UDP-4370 is dnaextrim/php_zklib.
 
 
 *******************
@@ -17,13 +11,25 @@ Server Requirements
 
 PHP version 5.6 or newer is recommended.
 
-It should work on 5.3.7 as well, but we strongly advise you NOT to run
-such old versions of PHP, because of potential security and performance
-issues, as well as missing features.
-
 ************
 Installation
 ************
 
-Please see the `installation section <https://codeigniter.com/user_guide/installation/index.html>`_
-of the CodeIgniter User Guide.
+Clone the git and extract to the server.
+
+************
+Feature
+************
+
+- Download Attandance Log from UDP connection.
+- Download Attandance Log from USB Drive.
+- Download User Information.
+- Management Departement.
+- Management User.
+- Sheet Report.
+- Leave and Permission.
+
+************
+Other
+************
+- Many to development.

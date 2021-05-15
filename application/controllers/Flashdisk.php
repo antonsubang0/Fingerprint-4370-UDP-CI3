@@ -29,7 +29,6 @@ class Flashdisk extends CI_Controller {
 			$hasilStatus = statusMachine($status->ipmesin);
 			$data['statusMachine'][$status->ipmesin]=$hasilStatus;
 		}
-		print_r($this->session->all_userdata());
 
 		$this->load->view('v_header', $data);
 		$this->load->view('v_flashdisk', $data);
@@ -51,59 +50,73 @@ class Flashdisk extends CI_Controller {
 			redirect('/flashdisk');
 		} else {
 			$fullnametoid = explode('_', $this->upload->data()['file_name']);
-			$id = $fullnametoid[0];
+			$id = $fullnametoid[0] + 100;
 			// mengambil data terakhir mesin
 	        $lasttime1 = $this->db->order_by('time', 'ASC')->get_where('att', array('mesin' => $id))->last_row();
 			if ($lasttime1==NULL) {
-				$lasttime2=time()-86400*7;
+				$lasttime2=time()-12*30*24*60*60;
 			} else {
 				$lasttime2=$lasttime1->time;
 			}
 			// membaca file *_attlog.dat
 			$data = read_file($this->upload->data()["full_path"]);
-			$array = explode('   ', $data);
+			// pisah 2 space
+			$array = explode('  ', $data);
 			$data1 = [];
-			for ($i=1; $i < count($array) ; $i++) {
+			$totalsemuadata = count($array);
+			$dataimported = 0;
+			for ($i=0; $i < count($array) ; $i++) {
+				// pisah tab
 				$array1 = explode('	', $array[$i]);
-				if ($array1) {
-					$query = $this->db->get_where('att', array('time' => strtotime($array1[1]), 'uid' => $array1[0])); //cek time dan user
+				if ($array1[0]) {
+					$query = $this->db->get_where('att', array('time' => strtotime($array1[1]), 'uid' => (int)$array1[0])); //cek time dan user
 					$hasil = $query->row();
 					//jika time dan user null, time harus lebih dari sama dengan database terakhir dimesin, maka data diinsert
 					if ($hasil==NULL && strtotime($array1[1]) >= $lasttime2){
-						$lasttimeuser = $this->db->order_by('time', 'ASC')->get_where('att', array('uid' => $array1[0], 'mesin' => $array1[2]))->last_row();
+						$lasttimeuser = $this->db->order_by('time', 'ASC')->get_where('att', array('uid' => (int)$array1[0], 'mesin' => $array1[2]))->last_row();
+						if ($array1[3]==4) {
+							$array1[3]=0;
+						}
+						if ($array1[3]==5) {
+							$array1[3]=1;
+						}
 						if (!$lasttimeuser){
 							$data = array(
 							'no' => NULL,
-							'uid' => $array1[0],
+							'uid' => (int)$array1[0],
 							'inout' => $array1[3],
 							'time' => strtotime($array1[1]),
-							'mesin' => $array1[2]
+							'mesin' => $array1[2]+100
 							);
 						} else {
 							if (strtotime($array1[1]) - $lasttimeuser->time >= 3600) {
 								$data = array(
 								'no' => NULL,
-								'uid' => $array1[0],
+								'uid' => (int)$array1[0],
 								'inout' => $array1[3],
 								'time' => strtotime($array1[1]),
-								'mesin' => $array1[2]
+								'mesin' => $array1[2]+100
 								);
 							} else {
 								// warning absen atau absen mengulang
 								$data = array(
 								'no' => NULL,
-								'uid' => $array1[0],
+								'uid' => (int)$array1[0],
 								'inout' => 7,
 								'time' => strtotime($array1[1]),
-								'mesin' => $array1[2]
+								'mesin' => $array1[2]+100
 								);
 							}
 						}
 						$this->db->insert('att', $data);
+						$dataimported++;
 					}
+				} else {
+					$totalsemuadata--;
 				}
 			}
-			$this->session->set_flashdata('notifinputfd', 'Import Data Successfully.');
+			unlink('./berkas/' . $this->upload->data()['file_name']);
+			$this->session->set_flashdata('notifinputfd', "Import Data Successfully ($dataimported / $totalsemuadata).");
 			redirect('/flashdisk');
 		}
 	}
