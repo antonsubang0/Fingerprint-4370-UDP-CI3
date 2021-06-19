@@ -69,27 +69,19 @@ class Flashdisk extends CI_Controller {
 				// pisah tab
 				$array1 = explode('	', $array[$i]);
 				if ($array1[0]) {
-					$query = $this->db->get_where('att', array('time' => strtotime($array1[1]), 'uid' => (int)$array1[0])); //cek time dan user
-					$hasil = $query->row();
-					//jika time dan user null, time harus lebih dari sama dengan database terakhir dimesin, maka data diinsert
-					if ($hasil==NULL && strtotime($array1[1]) >= $lasttime2){
-						$lasttimeuser = $this->db->order_by('time', 'ASC')->get_where('att', array('uid' => (int)$array1[0], 'mesin' => $array1[2]))->last_row();
-						if ($array1[3]==4) {
-							$array1[3]=0;
-						}
-						if ($array1[3]==5) {
-							$array1[3]=1;
-						}
-						if (!$lasttimeuser){
-							$data = array(
-							'no' => NULL,
-							'uid' => (int)$array1[0],
-							'inout' => $array1[3],
-							'time' => strtotime($array1[1]),
-							'mesin' => $array1[2]+100
-							);
-						} else {
-							if (strtotime($array1[1]) - $lasttimeuser->time >= 3600) {
+					if (strtotime($array1[1]) >= $lasttime2) {
+						$query = $this->db->get_where('att', array('time' => strtotime($array1[1]), 'uid' => (int)$array1[0])); //cek time dan user
+						$hasil = $query->row();
+						//jika time dan user null, time harus lebih dari sama dengan database terakhir dimesin, maka data diinsert
+						if ($hasil==NULL){
+							$lasttimeuser = $this->db->order_by('time', 'ASC')->get_where('att', array('uid' => (int)$array1[0], 'mesin' => $array1[2]))->last_row();
+							if ($array1[3]==4) {
+								$array1[3]=0;
+							}
+							if ($array1[3]==5) {
+								$array1[3]=1;
+							}
+							if (!$lasttimeuser){
 								$data = array(
 								'no' => NULL,
 								'uid' => (int)$array1[0],
@@ -98,18 +90,28 @@ class Flashdisk extends CI_Controller {
 								'mesin' => $array1[2]+100
 								);
 							} else {
-								// warning absen atau absen mengulang
-								$data = array(
-								'no' => NULL,
-								'uid' => (int)$array1[0],
-								'inout' => 7,
-								'time' => strtotime($array1[1]),
-								'mesin' => $array1[2]+100
-								);
+								if (strtotime($array1[1]) - $lasttimeuser->time >= 3600) {
+									$data = array(
+									'no' => NULL,
+									'uid' => (int)$array1[0],
+									'inout' => $array1[3],
+									'time' => strtotime($array1[1]),
+									'mesin' => $array1[2]+100
+									);
+								} else {
+									// warning absen atau absen mengulang
+									$data = array(
+									'no' => NULL,
+									'uid' => (int)$array1[0],
+									'inout' => 7,
+									'time' => strtotime($array1[1]),
+									'mesin' => $array1[2]+100
+									);
+								}
 							}
+							$this->db->insert('att', $data);
+							$dataimported++;
 						}
-						$this->db->insert('att', $data);
-						$dataimported++;
 					}
 				} else {
 					$totalsemuadata--;

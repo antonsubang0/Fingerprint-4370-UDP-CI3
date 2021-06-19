@@ -781,9 +781,10 @@ class Home extends CI_Controller {
 		$data['daftarmesin'] = $query->result();
 		// mengambil IP mesin untuk koneksi
 		foreach ($query->result() as $row){
-				$initmesin[$row->id]['nama'] = $row->namamesin;
-				$initmesin[$row->id]['ip'] = $row->ipmesin;
+			$initmesin[$row->id]['nama'] = $row->namamesin;
+			$initmesin[$row->id]['ip'] = $row->ipmesin;
 		}
+		
 		$ipmesin = $initmesin[$id]['ip'];
 		$namamesin = $initmesin[$id]['nama'];
 

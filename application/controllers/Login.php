@@ -64,6 +64,10 @@ class Login extends CI_Controller {
 						$this->db->where('username', $username);
 						$this->db->update('useradmin');
 						if($result['rule']=='absen'){
+							$expiredatt = time() - (60*60*24*90);
+							// delete absen 90 hari
+							$this->db->where('time <=', $expiredatt);
+							$this->db->delete('att');
 							$this->session->set_flashdata('info','Login Successfully');
 							redirect(base_url());
 						} elseif ($result['rule']=='suratjalan'){

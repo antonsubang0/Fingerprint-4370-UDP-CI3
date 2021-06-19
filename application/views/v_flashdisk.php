@@ -22,7 +22,6 @@
                           <div class="mt-5 pt-3">
                             <h6 class="text-danger text-center">Please, Dont the rename a file from fingerprint machine. Because on default, the number of the filename is define nomor machine. Example : 1_attlog.dat, 2_attlog.dat dan 3_attlog.dat.</h6>
                           </div>
-                          </div>
                         </div>
                     </div>
                 </div>
